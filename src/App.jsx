@@ -1,6 +1,5 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-const PARTNERS = ["Partner A", "Partner B"];
 
 const sections = [
   {
@@ -147,7 +146,6 @@ const smartColors = {
 };
 
 export default function DayZeroFramework() {
-  const [activePartner, setActivePartner] = useState(0);
   const [activeSectionIdx, setActiveSectionIdx] = useState(0);
   const [answers, setAnswers] = useState({});
   const [accepted, setAccepted] = useState(false);
@@ -162,11 +160,11 @@ export default function DayZeroFramework() {
   const setValue = (pid, qid, fi, val) =>
     setAnswers((prev) => ({ ...prev, [getKey(pid, qid, fi)]: val }));
 
-  const getCompletionCount = (partnerName) => {
+  const getCompletionCount = () => {
     let count = 0;
     sections.forEach((s) =>
       s.questions?.forEach((q) => {
-        if (q.fields.some((_, fi) => answers[getKey(partnerName, q.id, fi)]?.length > 0)) count++;
+        if (q.fields.some((_, fi) => answers[getKey("Me", q.id, fi)]?.length > 0)) count++;
       })
     );
     return count;
@@ -261,31 +259,55 @@ export default function DayZeroFramework() {
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   };
 
+  const AutoInput = ({ placeholder, value, onChange, color }) => {
+    const spanRef = React.useRef(null);
+    const [width, setWidth] = React.useState(140);
+    React.useEffect(() => {
+      if (spanRef.current) {
+        const w = Math.max(140, spanRef.current.offsetWidth + 20);
+        setWidth(w);
+      }
+    }, [value, placeholder]);
+    return (
+      <span style={{ position: "relative", display: "inline-block" }}>
+        <span ref={spanRef} style={{ position: "absolute", visibility: "hidden", whiteSpace: "pre", fontSize: "1rem", fontFamily: "'Georgia', serif", padding: "2px 6px" }}>
+          {value || placeholder}
+        </span>
+        <input
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          style={{
+            border: "none",
+            borderBottom: `2px solid ${color || "#C8A96E"}`,
+            background: "transparent",
+            padding: "2px 6px",
+            fontSize: "1rem",
+            fontFamily: "'Georgia', serif",
+            color: "#1a1a1a",
+            width: width,
+            outline: "none",
+            textAlign: "center",
+            transition: "width 0.15s",
+          }}
+        />
+      </span>
+    );
+  };
+
   const renderSentence = (question, partnerId) => {
     const parts = question.sentence.split(/____/);
     return (
-      <div style={{ lineHeight: "2.2", fontSize: "1.05rem", color: "#2a2a2a", fontFamily: "'Georgia', serif" }}>
+      <div style={{ lineHeight: "2.4", fontSize: "1.05rem", color: "#2a2a2a", fontFamily: "'Georgia', serif" }}>
         {parts.map((part, i) => (
           <span key={i}>
             <span>{part}</span>
             {i < question.fields.length && (
-              <input
+              <AutoInput
                 placeholder={question.fields[i]}
                 value={getValue(partnerId, question.id, i)}
                 onChange={(e) => setValue(partnerId, question.id, i, e.target.value)}
-                style={{
-                  border: "none",
-                  borderBottom: `2px solid ${activeSection.color || "#C8A96E"}`,
-                  background: "transparent",
-                  padding: "2px 6px",
-                  fontSize: "1rem",
-                  fontFamily: "'Georgia', serif",
-                  color: "#1a1a1a",
-                  minWidth: "120px",
-                  maxWidth: "220px",
-                  outline: "none",
-                  textAlign: "center",
-                }}
+                color={activeSection.color}
               />
             )}
           </span>
@@ -387,26 +409,25 @@ export default function DayZeroFramework() {
               <p style={{ color: "#555", fontSize: "0.9rem", lineHeight: 1.8, marginBottom: "1.5rem" }}>
                 Each partner saves their own answers privately. Share with each other — or a counsellor — when you feel ready.
               </p>
-              {PARTNERS.map((p) => {
-                const count = getCompletionCount(p);
+              {(() => {
+                const count = getCompletionCount();
                 return (
-                  <div key={p} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1rem 1.2rem", border: "1px solid #E5DDD0", marginBottom: "0.8rem", background: "#F7F4EF" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1rem 1.2rem", border: "1px solid #E5DDD0", marginBottom: "0.8rem", background: "#F7F4EF" }}>
                     <div>
-                      <div style={{ fontWeight: 600, marginBottom: "0.3rem" }}>{p}</div>
                       <div style={{ fontSize: "0.78rem", color: "#aaa", marginBottom: "0.4rem" }}>{count} of {totalQuestions} questions answered</div>
-                      <div style={{ height: 4, background: "#eee", width: 180, borderRadius: 2 }}>
+                      <div style={{ height: 4, background: "#eee", width: 220, borderRadius: 2 }}>
                         <div style={{ height: 4, background: "#C8A96E", borderRadius: 2, width: `${Math.round((count / totalQuestions) * 100)}%`, transition: "width 0.4s" }} />
                       </div>
                     </div>
                     <button
-                      onClick={() => handleExport(p)}
+                      onClick={() => handleExport("Me")}
                       style={{ background: "#1C1C1C", color: "#C8A96E", border: "none", padding: "0.7rem 1.5rem", fontSize: "0.8rem", letterSpacing: "0.15em", cursor: "pointer" }}
                     >
                       SAVE PDF
                     </button>
                   </div>
                 );
-              })}
+              })()}
               <p style={{ fontSize: "0.78rem", color: "#aaa", fontStyle: "italic", marginTop: "1rem", lineHeight: 1.7 }}>
                 An HTML file will download to your device. Open it in any browser, then use <strong>File → Print → Save as PDF</strong>.
               </p>
@@ -416,20 +437,6 @@ export default function DayZeroFramework() {
           {/* Questions panel */}
           {!showExport && activeSection && (
             <>
-              {/* Partner toggle */}
-              <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.2rem" }}>
-                {PARTNERS.map((p, i) => (
-                  <button key={p} onClick={() => setActivePartner(i)} style={{
-                    background: activePartner === i ? activeSection.color : "transparent",
-                    color: activePartner === i ? "#fff" : "#888",
-                    border: `1px solid ${activeSection.color}`,
-                    padding: "0.4rem 1.2rem", fontSize: "0.8rem", letterSpacing: "0.1em", cursor: "pointer", borderRadius: 1,
-                  }}>
-                    {p}
-                  </button>
-                ))}
-              </div>
-
               {/* Section description */}
               <div style={{ background: "#fff", borderLeft: `4px solid ${activeSection.color}`, padding: "1rem 1.3rem", marginBottom: "1.5rem", fontSize: "0.88rem", color: "#555", lineHeight: 1.8 }}>
                 <strong style={{ color: "#1a1a1a" }}>{activeSection.icon} {activeSection.label} — </strong>
@@ -439,7 +446,7 @@ export default function DayZeroFramework() {
               {/* Questions */}
               {activeSection.questions.map((q) => {
                 const isOpen = activeQ === q.id;
-                const partnerId = PARTNERS[activePartner];
+                const partnerId = "Me";
                 const hasContent = q.fields.some((_, fi) => getValue(partnerId, q.id, fi).length > 0);
                 return (
                   <div key={q.id} style={{ background: "#fff", border: `1px solid ${isOpen ? activeSection.color : "#E5DDD0"}`, borderLeft: `4px solid ${isOpen ? activeSection.color : "#E5DDD0"}`, marginBottom: "1rem", transition: "border-color 0.2s" }}>
