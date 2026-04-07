@@ -659,7 +659,6 @@ export default function DayZeroFramework() {
             </>
           )}
         </div>
-        </>)}
       )}
     </div>
   );
