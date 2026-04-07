@@ -145,14 +145,53 @@ const smartColors = {
 };
 
 // Must be outside component to preserve input focus
-const AutoInput = ({ placeholder, value, onChange, color }) => {
-  const spanRef = React.useRef(null);
-  const [width, setWidth] = React.useState(150);
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = React.useState(
+    typeof window !== "undefined" ? window.innerWidth < 600 : false
+  );
   React.useEffect(() => {
-    if (spanRef.current) {
-      setWidth(Math.max(150, spanRef.current.offsetWidth + 24));
+    const handler = () => setIsMobile(window.innerWidth < 600);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return isMobile;
+};
+
+const AutoInput = ({ placeholder, value, onChange, color }) => {
+  const isMobile = useIsMobile();
+  const spanRef = React.useRef(null);
+  const [desktopWidth, setDesktopWidth] = React.useState(150);
+
+  React.useEffect(() => {
+    if (!isMobile && spanRef.current) {
+      setDesktopWidth(Math.max(150, spanRef.current.offsetWidth + 24));
     }
-  }, [value, placeholder]);
+  }, [value, placeholder, isMobile]);
+
+  if (isMobile) {
+    return (
+      <span style={{ display: "block", margin: "0.3rem 0" }}>
+        <input
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          style={{
+            border: "none",
+            borderBottom: `2px solid ${color || "#C8A96E"}`,
+            background: "transparent",
+            padding: "4px 4px",
+            fontSize: "1rem",
+            fontFamily: "'Georgia', serif",
+            color: "#1a1a1a",
+            width: "100%",
+            outline: "none",
+            textAlign: "left",
+          }}
+        />
+      </span>
+    );
+  }
+
   return (
     <span style={{ position: "relative", display: "inline-block" }}>
       <span ref={spanRef} style={{
@@ -173,7 +212,7 @@ const AutoInput = ({ placeholder, value, onChange, color }) => {
           fontSize: "1.1rem",
           fontFamily: "'Georgia', serif",
           color: "#1a1a1a",
-          width: Math.min(width, typeof window !== "undefined" ? window.innerWidth - 48 : 300),
+          width: desktopWidth,
           outline: "none",
           textAlign: "center",
           transition: "width 0.1s",
@@ -377,7 +416,7 @@ export default function DayZeroFramework() {
       {/* Mobile-first global styles */}
       <style>{`
         * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; }
+        html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100vw; }
         input, textarea, button { -webkit-appearance: none; border-radius: 0; }
         @media (max-width: 480px) {
           .stepper-label { display: none; }
@@ -591,7 +630,7 @@ export default function DayZeroFramework() {
                                 Guiding thought: {q.hint}
                               </div>
                             )}
-                            <div style={{ background: "#F7F4EF", padding: "clamp(0.8rem, 3vw, 1.2rem)", marginBottom: "0.8rem", overflowX: "auto" }}>
+                            <div style={{ background: "#F7F4EF", padding: "clamp(0.8rem, 3vw, 1.2rem)", marginBottom: "0.8rem", overflowX: "hidden" }}>
                               {renderSentence(q)}
                             </div>
                             <textarea
