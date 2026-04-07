@@ -193,6 +193,8 @@ export default function DayZeroFramework() {
   const [accepted, setAccepted] = useState(false);
   const [activeQ, setActiveQ] = useState(null);
   const [showExport, setShowExport] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [nameSubmitted, setNameSubmitted] = useState(false);
 
   const activeSection = sections[activeSectionIdx];
   const isLastSection = activeSectionIdx === sections.length - 1;
@@ -288,17 +290,125 @@ export default function DayZeroFramework() {
 </html>`;
   };
 
-  const handleExport = (partnerName) => {
-    const html = buildPrintHTML(partnerName);
-    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `day-zero-${partnerName.toLowerCase().replace(" ", "-")}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  const handleExport = async () => {
+    const displayName = userName.trim() || "My";
+    const { jsPDF } = await import("https://cdn.jsdelivr.net/npm/jspdf@2.5.1/+esm");
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 18;
+    const usableW = pageW - margin * 2;
+    let y = margin;
+
+    const addPageIfNeeded = (height) => {
+      if (y + height > pageH - margin) { doc.addPage(); y = margin; }
+    };
+
+    // Header
+    doc.setFillColor(28, 28, 28);
+    doc.rect(0, 0, pageW, 28, "F");
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(180, 150, 100);
+    doc.text("A FRAMEWORK FOR RENEWAL", pageW / 2, 10, { align: "center" });
+    doc.setFontSize(20);
+    doc.setTextColor(200, 169, 110);
+    doc.text("Day Zero", pageW / 2, 20, { align: "center" });
+    y = 36;
+
+    // Name & date
+    const date = new Date().toLocaleDateString("en-ZA", { year: "numeric", month: "long", day: "numeric" });
+    doc.setFontSize(10);
+    doc.setTextColor(80, 80, 80);
+    doc.text(`${displayName}  ·  ${date}`, pageW / 2, y, { align: "center" });
+    y += 4;
+
+    // Gold divider
+    doc.setDrawColor(200, 169, 110);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, pageW - margin, y);
+    y += 8;
+
+    const sectionColors = { "As a Partner": [126,184,201], "As a Parent": [168,197,160], "Shared Vision": [201,160,197] };
+    const smartBg = { Specific: [232,168,124], Measurable: [126,184,201], Achievable: [168,197,160], Relevant: [200,169,110], "Time-bound": [201,160,197] };
+
+    sections.forEach((section) => {
+      addPageIfNeeded(14);
+      const sc = sectionColors[section.label] || [180,180,180];
+      doc.setFillColor(...sc);
+      doc.rect(margin, y, usableW, 8, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(255, 255, 255);
+      doc.text(`${section.icon}  ${section.label.toUpperCase()}`, margin + 3, y + 5.5);
+      y += 12;
+
+      (section.questions || []).forEach((q) => {
+        // SMART badge
+        addPageIfNeeded(10);
+        const sb = smartBg[q.smart] || [200,200,200];
+        doc.setFillColor(...sb);
+        doc.roundedRect(margin, y, 28, 5.5, 1, 1, "F");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(6.5);
+        doc.setTextColor(255, 255, 255);
+        doc.text(q.smart.toUpperCase(), margin + 14, y + 3.8, { align: "center" });
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9.5);
+        doc.setTextColor(30, 30, 30);
+        doc.text(q.prompt, margin + 32, y + 3.8);
+        y += 8;
+
+        // Build filled sentence
+        const parts = q.sentence.split(/____/);
+        let sentenceLine = parts.map((part, i) => {
+          if (i >= q.fields.length) return part;
+          const val = answers[`Me__${q.id}__${i}`] || `(${q.fields[i]})`;
+          return part + val;
+        }).join("");
+
+        addPageIfNeeded(8);
+        doc.setFillColor(247, 244, 239);
+        const lines = doc.splitTextToSize(sentenceLine, usableW - 6);
+        const boxH = lines.length * 5.5 + 5;
+        addPageIfNeeded(boxH);
+        doc.rect(margin, y, usableW, boxH, "F");
+        doc.setFont("times", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(30, 30, 30);
+        doc.text(lines, margin + 3, y + 4.5);
+        y += boxH + 2;
+
+        // Notes
+        const notes = answers[`Me__${q.id}__notes`];
+        if (notes) {
+          const noteLines = doc.splitTextToSize(notes, usableW - 6);
+          const noteH = noteLines.length * 5 + 4;
+          addPageIfNeeded(noteH);
+          doc.setFont("helvetica", "italic");
+          doc.setFontSize(9);
+          doc.setTextColor(100, 100, 100);
+          doc.text(noteLines, margin + 3, y + 3.5);
+          y += noteH + 2;
+        }
+        y += 3;
+      });
+      y += 4;
+    });
+
+    // Footer
+    addPageIfNeeded(10);
+    doc.setDrawColor(220, 220, 220);
+    doc.setLineWidth(0.3);
+    doc.line(margin, y, pageW - margin, y);
+    y += 5;
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(8);
+    doc.setTextColor(170, 170, 170);
+    doc.text("This document is private and personal. Share only when you are ready.", pageW / 2, y, { align: "center" });
+
+    doc.save(`day-zero-${displayName.toLowerCase().replace(/\s+/g, "-")}.pdf`);
   };
 
   const renderSentence = (question, partnerId) => {
@@ -360,6 +470,42 @@ export default function DayZeroFramework() {
 
       {accepted && (
         <div style={{ maxWidth: 700, margin: "0 auto", padding: "2rem 1rem" }}>
+
+          {/* Name entry */}
+          {!nameSubmitted && (
+            <div style={{ maxWidth: 480, margin: "0 auto 2rem", background: "#fff", border: "1px solid #E5DDD0", padding: "2rem" }}>
+              <div style={{ fontSize: "0.82rem", letterSpacing: "0.25em", color: "#C8A96E", marginBottom: "0.8rem" }}>BEFORE YOU BEGIN</div>
+              <h2 style={{ fontWeight: 400, fontSize: "1.5rem", marginBottom: "0.5rem" }}>What is your name?</h2>
+              <p style={{ color: "#777", fontSize: "1rem", lineHeight: 1.7, marginBottom: "1.5rem" }}>
+                Your name will appear on your exported PDF so your partner knows whose answers they're reading.
+              </p>
+              <input
+                autoFocus
+                placeholder="Your first name"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter" && userName.trim()) setNameSubmitted(true); }}
+                style={{
+                  width: "100%", border: "none", borderBottom: "2px solid #C8A96E",
+                  background: "transparent", padding: "0.6rem 0.3rem", fontSize: "1.3rem",
+                  fontFamily: "'Palatino Linotype', serif", color: "#1a1a1a", outline: "none",
+                  marginBottom: "1.5rem", boxSizing: "border-box",
+                }}
+              />
+              <button
+                onClick={() => { if (userName.trim()) setNameSubmitted(true); }}
+                disabled={!userName.trim()}
+                style={{
+                  background: userName.trim() ? "#1C1C1C" : "#ddd",
+                  color: userName.trim() ? "#C8A96E" : "#aaa",
+                  border: "none", padding: "0.9rem 2.5rem", fontSize: "0.9rem",
+                  letterSpacing: "0.2em", cursor: userName.trim() ? "pointer" : "default", width: "100%",
+                }}
+              >
+                BEGIN →
+              </button>
+            </div>
+          )}
 
           {/* Progress stepper */}
           <div style={{ display: "flex", alignItems: "center", marginBottom: "2.2rem", overflowX: "auto", paddingBottom: "0.5rem" }}>
@@ -426,7 +572,7 @@ export default function DayZeroFramework() {
                       </div>
                     </div>
                     <button
-                      onClick={() => handleExport("Me")}
+                      onClick={() => handleExport()}
                       style={{ background: "#1C1C1C", color: "#C8A96E", border: "none", padding: "0.7rem 1.5rem", fontSize: "0.95rem", letterSpacing: "0.15em", cursor: "pointer" }}
                     >
                       SAVE PDF
@@ -513,6 +659,7 @@ export default function DayZeroFramework() {
             </>
           )}
         </div>
+        </>)}
       )}
     </div>
   );
