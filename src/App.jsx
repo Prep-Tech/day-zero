@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-
 const sections = [
   {
     id: "vision-partner",
@@ -145,7 +144,7 @@ const smartColors = {
   "Time-bound": "#C9A0C5",
 };
 
-// AutoInput must be defined outside the main component to preserve focus
+// Must be outside component to preserve input focus
 const AutoInput = ({ placeholder, value, onChange, color }) => {
   const spanRef = React.useRef(null);
   const [width, setWidth] = React.useState(150);
@@ -156,13 +155,10 @@ const AutoInput = ({ placeholder, value, onChange, color }) => {
   }, [value, placeholder]);
   return (
     <span style={{ position: "relative", display: "inline-block" }}>
-      <span
-        ref={spanRef}
-        style={{
-          position: "absolute", visibility: "hidden", whiteSpace: "pre",
-          fontSize: "1.1rem", fontFamily: "'Georgia', serif", padding: "2px 6px",
-        }}
-      >
+      <span ref={spanRef} style={{
+        position: "absolute", visibility: "hidden", whiteSpace: "pre",
+        fontSize: "1.1rem", fontFamily: "'Georgia', serif", padding: "2px 6px",
+      }}>
         {value || placeholder}
       </span>
       <input
@@ -177,7 +173,7 @@ const AutoInput = ({ placeholder, value, onChange, color }) => {
           fontSize: "1.1rem",
           fontFamily: "'Georgia', serif",
           color: "#1a1a1a",
-          width: width,
+          width: Math.min(width, typeof window !== "undefined" ? window.innerWidth - 48 : 300),
           outline: "none",
           textAlign: "center",
           transition: "width 0.1s",
@@ -199,16 +195,16 @@ export default function DayZeroFramework() {
   const activeSection = sections[activeSectionIdx];
   const isLastSection = activeSectionIdx === sections.length - 1;
 
-  const getKey = (pid, qid, fi) => `${pid}__${qid}__${fi}`;
-  const getValue = (pid, qid, fi) => answers[getKey(pid, qid, fi)] || "";
-  const setValue = (pid, qid, fi, val) =>
-    setAnswers((prev) => ({ ...prev, [getKey(pid, qid, fi)]: val }));
+  const getKey = (qid, fi) => `Me__${qid}__${fi}`;
+  const getValue = (qid, fi) => answers[getKey(qid, fi)] || "";
+  const setValue = (qid, fi, val) =>
+    setAnswers((prev) => ({ ...prev, [getKey(qid, fi)]: val }));
 
   const getCompletionCount = () => {
     let count = 0;
     sections.forEach((s) =>
       s.questions?.forEach((q) => {
-        if (q.fields.some((_, fi) => answers[getKey("Me", q.id, fi)]?.length > 0)) count++;
+        if (q.fields.some((_, fi) => answers[getKey(q.id, fi)]?.length > 0)) count++;
       })
     );
     return count;
@@ -227,69 +223,6 @@ export default function DayZeroFramework() {
     }
   };
 
-  const buildPrintHTML = (partnerName) => {
-    const date = new Date().toLocaleDateString("en-ZA", { year: "numeric", month: "long", day: "numeric" });
-
-    const sectionsHTML = sections.map((section) => {
-      const questionsHTML = (section.questions || []).map((q) => {
-        const parts = q.sentence.split(/____/);
-        let filledSentence = parts.map((part, i) => {
-          if (i >= q.fields.length) return `<span>${part}</span>`;
-          const val = getValue(partnerName, q.id, i);
-          const filled = val
-            ? `<span style="border-bottom:2px solid #C8A96E;padding:0 4px;font-style:italic;">${val}</span>`
-            : `<span style="border-bottom:2px solid #ccc;display:inline-block;min-width:80px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>`;
-          return `<span>${part}</span>${filled}`;
-        }).join("");
-
-        const notes = getValue(partnerName, q.id, "notes");
-        return `
-          <div style="margin-bottom:1.2rem;padding:0.9rem 1.1rem;border-left:3px solid ${smartColors[q.smart]};background:#fafafa;page-break-inside:avoid;">
-            <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem;">
-              <span style="background:${smartColors[q.smart]};color:#fff;font-size:0.6rem;letter-spacing:0.15em;padding:2px 7px;font-family:Arial,sans-serif;">${q.smart.toUpperCase()}</span>
-              <strong style="font-size:0.9rem;font-family:Arial,sans-serif;">${q.prompt}</strong>
-            </div>
-            <div style="font-family:'Palatino Linotype',Palatino,serif;font-size:1rem;line-height:2.1;">${filledSentence}</div>
-            ${notes ? `<div style="margin-top:0.6rem;font-size:0.85rem;color:#555;font-style:italic;border-top:1px solid #eee;padding-top:0.5rem;font-family:Arial,sans-serif;">${notes}</div>` : ""}
-          </div>`;
-      }).join("");
-
-      return `
-        <div style="margin-bottom:2rem;page-break-inside:avoid;">
-          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.8rem;padding-bottom:0.5rem;border-bottom:2px solid ${section.color};">
-            <span style="font-size:0.7rem;letter-spacing:0.25em;color:${section.color};font-family:Arial,sans-serif;text-transform:uppercase;">${section.icon} ${section.label}</span>
-          </div>
-          ${questionsHTML}
-        </div>`;
-    }).join("");
-
-    return `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8"/>
-  <title>Day Zero — ${partnerName}</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'Palatino Linotype',Palatino,serif;color:#1a1a1a;background:#fff;padding:2.5rem;max-width:780px;margin:0 auto;}
-    @media print{body{padding:0;}@page{margin:1.5cm;size:A4;}}
-  </style>
-</head>
-<body>
-  <div style="text-align:center;border-bottom:2px solid #C8A96E;padding-bottom:1.5rem;margin-bottom:2.5rem;">
-    <div style="font-size:0.65rem;letter-spacing:0.3em;color:#888;margin-bottom:0.4rem;font-family:Arial,sans-serif;">A FRAMEWORK FOR RENEWAL</div>
-    <h1 style="font-size:2rem;font-weight:400;color:#C8A96E;margin-bottom:0.3rem;font-family:'Palatino Linotype',Palatino,serif;">Day Zero</h1>
-    <div style="font-size:0.85rem;color:#888;font-style:italic;margin-bottom:0.8rem;font-family:'Palatino Linotype',Palatino,serif;">All past issues are forgiven and forgotten. Today we begin again.</div>
-    <div style="font-size:0.9rem;color:#444;font-family:Arial,sans-serif;"><strong>${partnerName}</strong> &nbsp;·&nbsp; ${date}</div>
-  </div>
-  ${sectionsHTML}
-  <div style="text-align:center;margin-top:3rem;padding-top:1rem;border-top:1px solid #eee;font-size:0.75rem;color:#aaa;font-style:italic;font-family:Arial,sans-serif;">
-    This document is private and personal. Share only when you are ready.
-  </div>
-  <script>window.onload = function(){ window.print(); }<\/script>
-</body>
-</html>`;
-  };
-
   const handleExport = async () => {
     const displayName = userName.trim() || "My";
     const { jsPDF } = await import("https://cdn.jsdelivr.net/npm/jspdf@2.5.1/+esm");
@@ -304,7 +237,6 @@ export default function DayZeroFramework() {
       if (y + height > pageH - margin) { doc.addPage(); y = margin; }
     };
 
-    // Header
     doc.setFillColor(28, 28, 28);
     doc.rect(0, 0, pageW, 28, "F");
     doc.setFont("helvetica", "normal");
@@ -316,25 +248,33 @@ export default function DayZeroFramework() {
     doc.text("Day Zero", pageW / 2, 20, { align: "center" });
     y = 36;
 
-    // Name & date
     const date = new Date().toLocaleDateString("en-ZA", { year: "numeric", month: "long", day: "numeric" });
     doc.setFontSize(10);
     doc.setTextColor(80, 80, 80);
     doc.text(`${displayName}  ·  ${date}`, pageW / 2, y, { align: "center" });
     y += 4;
 
-    // Gold divider
     doc.setDrawColor(200, 169, 110);
     doc.setLineWidth(0.5);
     doc.line(margin, y, pageW - margin, y);
     y += 8;
 
-    const sectionColors = { "As a Partner": [126,184,201], "As a Parent": [168,197,160], "Shared Vision": [201,160,197] };
-    const smartBg = { Specific: [232,168,124], Measurable: [126,184,201], Achievable: [168,197,160], Relevant: [200,169,110], "Time-bound": [201,160,197] };
+    const sectionColors = {
+      "As a Partner": [126, 184, 201],
+      "As a Parent": [168, 197, 160],
+      "Shared Vision": [201, 160, 197],
+    };
+    const smartBg = {
+      Specific: [232, 168, 124],
+      Measurable: [126, 184, 201],
+      Achievable: [168, 197, 160],
+      Relevant: [200, 169, 110],
+      "Time-bound": [201, 160, 197],
+    };
 
     sections.forEach((section) => {
       addPageIfNeeded(14);
-      const sc = sectionColors[section.label] || [180,180,180];
+      const sc = sectionColors[section.label] || [180, 180, 180];
       doc.setFillColor(...sc);
       doc.rect(margin, y, usableW, 8, "F");
       doc.setFont("helvetica", "bold");
@@ -344,9 +284,8 @@ export default function DayZeroFramework() {
       y += 12;
 
       (section.questions || []).forEach((q) => {
-        // SMART badge
         addPageIfNeeded(10);
-        const sb = smartBg[q.smart] || [200,200,200];
+        const sb = smartBg[q.smart] || [200, 200, 200];
         doc.setFillColor(...sb);
         doc.roundedRect(margin, y, 28, 5.5, 1, 1, "F");
         doc.setFont("helvetica", "bold");
@@ -360,7 +299,6 @@ export default function DayZeroFramework() {
         doc.text(q.prompt, margin + 32, y + 3.8);
         y += 8;
 
-        // Build filled sentence
         const parts = q.sentence.split(/____/);
         let sentenceLine = parts.map((part, i) => {
           if (i >= q.fields.length) return part;
@@ -380,7 +318,6 @@ export default function DayZeroFramework() {
         doc.text(lines, margin + 3, y + 4.5);
         y += boxH + 2;
 
-        // Notes
         const notes = answers[`Me__${q.id}__notes`];
         if (notes) {
           const noteLines = doc.splitTextToSize(notes, usableW - 6);
@@ -397,7 +334,6 @@ export default function DayZeroFramework() {
       y += 4;
     });
 
-    // Footer
     addPageIfNeeded(10);
     doc.setDrawColor(220, 220, 220);
     doc.setLineWidth(0.3);
@@ -411,7 +347,7 @@ export default function DayZeroFramework() {
     doc.save(`day-zero-${displayName.toLowerCase().replace(/\s+/g, "-")}.pdf`);
   };
 
-  const renderSentence = (question, partnerId) => {
+  const renderSentence = (question) => {
     const parts = question.sentence.split(/____/);
     return (
       <div style={{ lineHeight: "2.6", fontSize: "1.1rem", color: "#2a2a2a", fontFamily: "'Georgia', serif" }}>
@@ -421,8 +357,8 @@ export default function DayZeroFramework() {
             {i < question.fields.length && (
               <AutoInput
                 placeholder={question.fields[i]}
-                value={getValue(partnerId, question.id, i)}
-                onChange={(e) => setValue(partnerId, question.id, i, e.target.value)}
+                value={getValue(question.id, i)}
+                onChange={(e) => setValue(question.id, i, e.target.value)}
                 color={activeSection.color}
               />
             )}
@@ -432,51 +368,67 @@ export default function DayZeroFramework() {
     );
   };
 
+  const count = getCompletionCount();
+  const pct = Math.round((count / totalQuestions) * 100);
+
   return (
     <div style={{ minHeight: "100vh", background: "#F7F4EF", fontFamily: "'Palatino Linotype','Palatino',serif", color: "#1a1a1a" }}>
 
+      {/* Mobile-first global styles */}
+      <style>{`
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; }
+        input, textarea, button { -webkit-appearance: none; border-radius: 0; }
+        @media (max-width: 480px) {
+          .stepper-label { display: none; }
+          .section-desc { font-size: 0.95rem !important; }
+          .question-prompt { font-size: 0.9rem !important; }
+          .smart-badge { font-size: 0.6rem !important; padding: 2px 5px !important; }
+        }
+      `}</style>
+
       {/* Header */}
-      <div style={{ background: "#1C1C1C", color: "#C8A96E", padding: "2rem 2rem 1.5rem", textAlign: "center", letterSpacing: "0.12em" }}>
-        <div style={{ fontSize: "0.875rem", letterSpacing: "0.3em", color: "#888", marginBottom: "0.5rem" }}>A FRAMEWORK FOR RENEWAL</div>
-        <h1 style={{ margin: 0, fontSize: "2.2rem", fontWeight: "400", color: "#C8A96E" }}>Day Zero</h1>
-        <p style={{ margin: "0.5rem 0 0", color: "#aaa", fontSize: "1.05rem", fontStyle: "italic" }}>
+      <div style={{ background: "#1C1C1C", color: "#C8A96E", padding: "1.5rem 1rem", textAlign: "center" }}>
+        <div style={{ fontSize: "0.7rem", letterSpacing: "0.3em", color: "#888", marginBottom: "0.4rem" }}>A FRAMEWORK FOR RENEWAL</div>
+        <h1 style={{ margin: 0, fontSize: "clamp(1.6rem, 6vw, 2.2rem)", fontWeight: "400", color: "#C8A96E" }}>Day Zero</h1>
+        <p style={{ margin: "0.4rem 0 0", color: "#aaa", fontSize: "clamp(0.82rem, 3vw, 0.95rem)", fontStyle: "italic" }}>
           All past issues are forgiven and forgotten. Today we begin again.
         </p>
       </div>
 
       {/* Intro */}
       {!accepted && (
-        <div style={{ maxWidth: 640, margin: "3rem auto", background: "#fff", padding: "2.5rem", boxShadow: "0 2px 24px rgba(0,0,0,0.07)", border: "1px solid #E5DDD0" }}>
-          <div style={{ fontSize: "0.82rem", letterSpacing: "0.3em", color: "#C8A96E", marginBottom: "1rem" }}>BEFORE YOU BEGIN</div>
-          <h2 style={{ fontWeight: 400, fontSize: "1.6rem", marginTop: 0 }}>The Day Zero Premise</h2>
-          <p style={{ color: "#555", lineHeight: 1.8 }}>
-            This exercise asks both of you to do something genuinely difficult: set aside everything that has happened and answer honestly about the future you <em>want</em> — not the past you're carrying.
+        <div style={{ maxWidth: 620, margin: "2rem auto", background: "#fff", padding: "clamp(1.2rem, 5vw, 2.5rem)", border: "1px solid #E5DDD0" }}>
+          <div style={{ fontSize: "0.72rem", letterSpacing: "0.3em", color: "#C8A96E", marginBottom: "1rem" }}>BEFORE YOU BEGIN</div>
+          <h2 style={{ fontWeight: 400, fontSize: "clamp(1.2rem, 5vw, 1.5rem)", marginTop: 0 }}>The Day Zero Premise</h2>
+          <p style={{ color: "#555", lineHeight: 1.8, fontSize: "clamp(0.9rem, 3.5vw, 1rem)" }}>
+            This exercise asks both of you to set aside everything that has happened and answer honestly about the future you <em>want</em> — not the past you're carrying.
           </p>
-          <p style={{ color: "#555", lineHeight: 1.8 }}>There are no right answers. There is no winner. The only goal is clarity — for yourself, and then for each other.</p>
-          <ul style={{ color: "#555", lineHeight: 2, paddingLeft: "1.2rem" }}>
+          <p style={{ color: "#555", lineHeight: 1.8, fontSize: "clamp(0.9rem, 3.5vw, 1rem)" }}>There are no right answers. There is no winner. The only goal is clarity — for yourself, and then for each other.</p>
+          <ul style={{ color: "#555", lineHeight: 2, paddingLeft: "1.2rem", fontSize: "clamp(0.88rem, 3.5vw, 1rem)" }}>
             <li>Each partner completes all three sections <strong>independently</strong></li>
             <li>Use the fill-in sentences to guide, not limit, what you want to say</li>
             <li>SMART goals keep intentions <strong>concrete and actionable</strong></li>
             <li>Save your answers as a PDF when you're ready to share</li>
           </ul>
-          <div style={{ background: "#F7F4EF", borderLeft: "3px solid #C8A96E", padding: "1rem 1.2rem", margin: "1.5rem 0", fontStyle: "italic", color: "#555" }}>
+          <div style={{ background: "#F7F4EF", borderLeft: "3px solid #C8A96E", padding: "1rem 1.2rem", margin: "1.5rem 0", fontStyle: "italic", color: "#555", fontSize: "clamp(0.88rem, 3.5vw, 1rem)" }}>
             "If today was Day Zero — all past issues forgiven and forgotten — how do you see your life going forward?"
           </div>
-          <button onClick={() => setAccepted(true)} style={{ background: "#1C1C1C", color: "#C8A96E", border: "none", padding: "0.9rem 2.5rem", fontSize: "1rem", letterSpacing: "0.2em", cursor: "pointer", width: "100%" }}>
+          <button onClick={() => setAccepted(true)} style={{ background: "#1C1C1C", color: "#C8A96E", border: "none", padding: "1rem 2rem", fontSize: "clamp(0.8rem, 3vw, 0.9rem)", letterSpacing: "0.2em", cursor: "pointer", width: "100%" }}>
             I ACCEPT THE PREMISE — BEGIN
           </button>
         </div>
       )}
 
       {accepted && (
-        <div style={{ maxWidth: 700, margin: "0 auto", padding: "2rem 1rem" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto", padding: "1.5rem clamp(0.8rem, 4vw, 1rem)" }}>
 
           {/* Name entry */}
           {!nameSubmitted && (
-            <div style={{ maxWidth: 480, margin: "0 auto 2rem", background: "#fff", border: "1px solid #E5DDD0", padding: "2rem" }}>
-              <div style={{ fontSize: "0.82rem", letterSpacing: "0.25em", color: "#C8A96E", marginBottom: "0.8rem" }}>BEFORE YOU BEGIN</div>
-              <h2 style={{ fontWeight: 400, fontSize: "1.5rem", marginBottom: "0.5rem" }}>What is your name?</h2>
-              <p style={{ color: "#777", fontSize: "1rem", lineHeight: 1.7, marginBottom: "1.5rem" }}>
+            <div style={{ maxWidth: 480, margin: "0 auto 2rem", background: "#fff", border: "1px solid #E5DDD0", padding: "clamp(1.2rem, 5vw, 2rem)" }}>
+              <div style={{ fontSize: "0.78rem", letterSpacing: "0.25em", color: "#C8A96E", marginBottom: "0.8rem" }}>BEFORE YOU BEGIN</div>
+              <h2 style={{ fontWeight: 400, fontSize: "clamp(1.2rem, 5vw, 1.5rem)", marginBottom: "0.5rem" }}>What is your name?</h2>
+              <p style={{ color: "#777", fontSize: "clamp(0.88rem, 3.5vw, 1rem)", lineHeight: 1.7, marginBottom: "1.5rem" }}>
                 Your name will appear on your exported PDF so your partner knows whose answers they're reading.
               </p>
               <input
@@ -487,9 +439,10 @@ export default function DayZeroFramework() {
                 onKeyDown={(e) => { if (e.key === "Enter" && userName.trim()) setNameSubmitted(true); }}
                 style={{
                   width: "100%", border: "none", borderBottom: "2px solid #C8A96E",
-                  background: "transparent", padding: "0.6rem 0.3rem", fontSize: "1.3rem",
+                  background: "transparent", padding: "0.6rem 0.3rem",
+                  fontSize: "clamp(1.1rem, 5vw, 1.3rem)",
                   fontFamily: "'Palatino Linotype', serif", color: "#1a1a1a", outline: "none",
-                  marginBottom: "1.5rem", boxSizing: "border-box",
+                  marginBottom: "1.5rem",
                 }}
               />
               <button
@@ -498,7 +451,8 @@ export default function DayZeroFramework() {
                 style={{
                   background: userName.trim() ? "#1C1C1C" : "#ddd",
                   color: userName.trim() ? "#C8A96E" : "#aaa",
-                  border: "none", padding: "0.9rem 2.5rem", fontSize: "0.9rem",
+                  border: "none", padding: "1rem 2rem",
+                  fontSize: "clamp(0.8rem, 3vw, 0.9rem)",
                   letterSpacing: "0.2em", cursor: userName.trim() ? "pointer" : "default", width: "100%",
                 }}
               >
@@ -507,156 +461,194 @@ export default function DayZeroFramework() {
             </div>
           )}
 
-          {/* Progress stepper */}
-          <div style={{ display: "flex", alignItems: "center", marginBottom: "2.2rem", overflowX: "auto", paddingBottom: "0.5rem" }}>
-            {sections.map((s, i) => (
-              <div key={s.id} style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.3rem" }}>
+          {nameSubmitted && (
+            <div>
+              {/* Progress stepper */}
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center", marginBottom: "1.5rem", overflowX: "auto", paddingBottom: "0.25rem" }}>
+                {sections.map((s, i) => (
+                  <div key={s.id} style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.3rem" }}>
+                      <button
+                        onClick={() => { setActiveSectionIdx(i); setActiveQ(null); setShowExport(false); }}
+                        style={{
+                          background: showExport ? "#eee" : activeSectionIdx === i ? s.color : activeSectionIdx > i ? "#1C1C1C" : "#fff",
+                          color: showExport ? "#aaa" : activeSectionIdx === i ? "#fff" : activeSectionIdx > i ? s.color : "#bbb",
+                          border: `2px solid ${!showExport && activeSectionIdx >= i ? s.color : "#ddd"}`,
+                          borderRadius: "50%", width: 36, height: 36,
+                          fontSize: "0.9rem", cursor: "pointer", flexShrink: 0,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                        }}
+                      >
+                        {!showExport && activeSectionIdx > i ? "✓" : s.icon}
+                      </button>
+                      <div className="stepper-label" style={{ fontSize: "0.58rem", letterSpacing: "0.1em", color: !showExport && activeSectionIdx === i ? s.color : "#aaa", whiteSpace: "nowrap", textAlign: "center" }}>
+                        {s.label.toUpperCase()}
+                      </div>
+                    </div>
+                    <div style={{ width: "clamp(16px, 4vw, 36px)", height: 1, background: activeSectionIdx > i && !showExport ? "#C8A96E" : "#ddd", margin: "0 2px", marginBottom: "1.2rem", flexShrink: 0 }} />
+                  </div>
+                ))}
+                {/* PDF step */}
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.3rem", flexShrink: 0 }}>
                   <button
-                    onClick={() => { setActiveSectionIdx(i); setActiveQ(null); setShowExport(false); }}
+                    onClick={() => setShowExport(true)}
                     style={{
-                      background: showExport ? "#eee" : activeSectionIdx === i ? s.color : activeSectionIdx > i ? "#1C1C1C" : "#fff",
-                      color: showExport ? "#aaa" : activeSectionIdx === i ? "#fff" : activeSectionIdx > i ? s.color : "#bbb",
-                      border: `2px solid ${!showExport && activeSectionIdx >= i ? s.color : "#ddd"}`,
-                      borderRadius: "50%", width: 38, height: 38,
-                      fontSize: "1.1rem", cursor: "pointer", flexShrink: 0,
+                      background: showExport ? "#C8A96E" : "#fff",
+                      color: showExport ? "#fff" : "#aaa",
+                      border: `2px solid ${showExport ? "#C8A96E" : "#ddd"}`,
+                      borderRadius: "50%", width: 36, height: 36,
+                      fontSize: "0.85rem", cursor: "pointer",
                       display: "flex", alignItems: "center", justifyContent: "center",
                     }}
                   >
-                    {!showExport && activeSectionIdx > i ? "✓" : s.icon}
+                    ↓
                   </button>
-                  <div style={{ fontSize: "0.72rem", letterSpacing: "0.1em", color: !showExport && activeSectionIdx === i ? s.color : "#aaa", whiteSpace: "nowrap", textAlign: "center" }}>
-                    {s.label.toUpperCase()}
+                  <div className="stepper-label" style={{ fontSize: "0.58rem", letterSpacing: "0.1em", color: showExport ? "#C8A96E" : "#aaa", whiteSpace: "nowrap" }}>
+                    SAVE PDF
                   </div>
                 </div>
-                <div style={{ width: 40, height: 1, background: activeSectionIdx > i && !showExport ? "#C8A96E" : "#ddd", margin: "0 0.3rem", marginBottom: "1.2rem", flexShrink: 0 }} />
               </div>
-            ))}
-            {/* PDF step */}
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.3rem", flexShrink: 0 }}>
-              <button
-                onClick={() => setShowExport(true)}
-                style={{
-                  background: showExport ? "#C8A96E" : "#fff",
-                  color: showExport ? "#fff" : "#aaa",
-                  border: `2px solid ${showExport ? "#C8A96E" : "#ddd"}`,
-                  borderRadius: "50%", width: 38, height: 38,
-                  fontSize: "1rem", cursor: "pointer", flexShrink: 0,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}
-              >
-                ↓
-              </button>
-              <div style={{ fontSize: "0.72rem", letterSpacing: "0.1em", color: showExport ? "#C8A96E" : "#aaa", whiteSpace: "nowrap" }}>
-                SAVE PDF
-              </div>
-            </div>
-          </div>
 
-          {/* Export panel */}
-          {showExport && (
-            <div style={{ background: "#fff", border: "1px solid #C8A96E", padding: "2.2rem", marginBottom: "2.2rem" }}>
-              <div style={{ fontSize: "0.82rem", letterSpacing: "0.25em", color: "#C8A96E", marginBottom: "0.5rem" }}>SAVE YOUR ANSWERS</div>
-              <h2 style={{ fontWeight: 400, fontSize: "1.5rem", marginBottom: "0.95rem" }}>Ready to share?</h2>
-              <p style={{ color: "#555", fontSize: "1.05rem", lineHeight: 1.8, marginBottom: "1.5rem" }}>
-                Each partner saves their own answers privately. Share with each other — or a counsellor — when you feel ready.
-              </p>
-              {(() => {
-                const count = getCompletionCount();
-                return (
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1rem 1.2rem", border: "1px solid #E5DDD0", marginBottom: "0.95rem", background: "#F7F4EF" }}>
-                    <div>
-                      <div style={{ fontSize: "0.9rem", color: "#aaa", marginBottom: "0.4rem" }}>{count} of {totalQuestions} questions answered</div>
-                      <div style={{ height: 4, background: "#eee", width: 220, borderRadius: 2 }}>
-                        <div style={{ height: 4, background: "#C8A96E", borderRadius: 2, width: `${Math.round((count / totalQuestions) * 100)}%`, transition: "width 0.4s" }} />
-                      </div>
+              {/* Export panel */}
+              {showExport && (
+                <div style={{ background: "#fff", border: "1px solid #C8A96E", padding: "clamp(1.2rem, 5vw, 2rem)", marginBottom: "2rem" }}>
+                  <div style={{ fontSize: "0.72rem", letterSpacing: "0.25em", color: "#C8A96E", marginBottom: "0.5rem" }}>SAVE YOUR ANSWERS</div>
+                  <h2 style={{ fontWeight: 400, fontSize: "clamp(1.1rem, 5vw, 1.4rem)", marginBottom: "0.8rem" }}>
+                    Ready to share, {userName}?
+                  </h2>
+                  <p style={{ color: "#555", fontSize: "clamp(0.88rem, 3.5vw, 1rem)", lineHeight: 1.8, marginBottom: "1.5rem" }}>
+                    Your answers will be saved as a PDF. Share it with your partner — or a counsellor — when you feel ready.
+                  </p>
+
+                  {/* Progress + button stacked on mobile */}
+                  <div style={{ background: "#F7F4EF", border: "1px solid #E5DDD0", padding: "1.2rem", marginBottom: "0.8rem" }}>
+                    <div style={{ fontSize: "clamp(0.82rem, 3.5vw, 0.9rem)", color: "#555", marginBottom: "0.8rem" }}>
+                      <strong>{userName}</strong> — {count} of {totalQuestions} questions answered
+                    </div>
+                    <div style={{ height: 6, background: "#eee", borderRadius: 3, marginBottom: "1.2rem" }}>
+                      <div style={{ height: 6, background: "#C8A96E", borderRadius: 3, width: `${pct}%`, transition: "width 0.4s" }} />
                     </div>
                     <button
-                      onClick={() => handleExport()}
-                      style={{ background: "#1C1C1C", color: "#C8A96E", border: "none", padding: "0.7rem 1.5rem", fontSize: "0.95rem", letterSpacing: "0.15em", cursor: "pointer" }}
+                      onClick={handleExport}
+                      style={{
+                        background: "#1C1C1C", color: "#C8A96E", border: "none",
+                        padding: "0.9rem 1.5rem", fontSize: "clamp(0.8rem, 3vw, 0.88rem)",
+                        letterSpacing: "0.15em", cursor: "pointer", width: "100%",
+                      }}
                     >
-                      SAVE PDF
+                      ↓ SAVE AS PDF
                     </button>
                   </div>
-                );
-              })()}
-              <p style={{ fontSize: "0.9rem", color: "#aaa", fontStyle: "italic", marginTop: "1rem", lineHeight: 1.7 }}>
-                An HTML file will download to your device. Open it in any browser, then use <strong>File → Print → Save as PDF</strong>.
-              </p>
-            </div>
-          )}
-
-          {/* Questions panel */}
-          {!showExport && activeSection && (
-            <>
-              {/* Section description */}
-              <div style={{ background: "#fff", borderLeft: `4px solid ${activeSection.color}`, padding: "1rem 1.3rem", marginBottom: "1.5rem", fontSize: "1rem", color: "#555", lineHeight: 1.8 }}>
-                <strong style={{ color: "#1a1a1a" }}>{activeSection.icon} {activeSection.label} — </strong>
-                {activeSection.description}
-              </div>
-
-              {/* Questions */}
-              {activeSection.questions.map((q) => {
-                const isOpen = activeQ === q.id;
-                const partnerId = "Me";
-                const hasContent = q.fields.some((_, fi) => getValue(partnerId, q.id, fi).length > 0);
-                return (
-                  <div key={q.id} style={{ background: "#fff", border: `1px solid ${isOpen ? activeSection.color : "#E5DDD0"}`, borderLeft: `4px solid ${isOpen ? activeSection.color : "#E5DDD0"}`, marginBottom: "1rem", transition: "border-color 0.2s" }}>
-                    <button onClick={() => setActiveQ(isOpen ? null : q.id)} style={{ width: "100%", background: "none", border: "none", padding: "1.2rem 1.5rem", textAlign: "left", cursor: "pointer", display: "flex", alignItems: "center", gap: "1rem" }}>
-                      <span style={{ background: smartColors[q.smart], color: "#fff", fontSize: "0.78rem", letterSpacing: "0.2em", padding: "2px 8px", borderRadius: 1, whiteSpace: "nowrap", flexShrink: 0 }}>
-                        {q.smart.toUpperCase()}
-                      </span>
-                      <span style={{ fontSize: "1.1rem", color: "#1a1a1a", flex: 1 }}>{q.prompt}</span>
-                      {hasContent && <span style={{ color: "#A8C5A0", fontSize: "1rem" }}>✓</span>}
-                      <span style={{ color: "#aaa", fontSize: "1.05rem" }}>{isOpen ? "▲" : "▼"}</span>
-                    </button>
-                    {isOpen && (
-                      <div style={{ padding: "0 1.5rem 1.5rem" }}>
-                        {q.hint && <div style={{ fontSize: "0.9rem", color: "#aaa", marginBottom: "1rem", fontStyle: "italic" }}>Guiding thought: {q.hint}</div>}
-                        <div style={{ background: "#F7F4EF", padding: "1.2rem 1.5rem", borderRadius: 1, marginBottom: "1rem" }}>
-                          {renderSentence(q, partnerId)}
-                        </div>
-                        <textarea
-                          placeholder="Any additional thoughts you want to express beyond the sentence above..."
-                          value={getValue(partnerId, q.id, "notes")}
-                          onChange={(e) => setValue(partnerId, q.id, "notes", e.target.value)}
-                          rows={3}
-                          style={{ width: "100%", border: "1px solid #E5DDD0", padding: "0.95rem", fontSize: "1.05rem", fontFamily: "inherit", color: "#333", background: "#fafafa", resize: "vertical", boxSizing: "border-box", outline: "none" }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-
-              {/* SMART legend */}
-              <div style={{ marginTop: "1.5rem", padding: "1rem 1.5rem", background: "#fff", border: "1px solid #E5DDD0" }}>
-                <div style={{ fontSize: "0.82rem", letterSpacing: "0.25em", color: "#aaa", marginBottom: "0.82rem" }}>SMART GOAL FRAMEWORK</div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.72rem" }}>
-                  {Object.entries(smartColors).map(([label, color]) => (
-                    <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                      <div style={{ width: 10, height: 10, background: color, borderRadius: "50%" }} />
-                      <span style={{ fontSize: "0.9rem", color: "#555" }}><strong>{label[0]}</strong>{label.slice(1)}</span>
-                    </div>
-                  ))}
                 </div>
-              </div>
+              )}
 
-              {/* Next / Save PDF button */}
-              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1.5rem" }}>
-                <button
-                  onClick={handleNext}
-                  style={{ background: "#1C1C1C", color: isLastSection ? "#C8A96E" : "#fff", border: "none", padding: "0.9rem 2.5rem", fontSize: "1rem", letterSpacing: "0.2em", cursor: "pointer" }}
-                >
-                  {isLastSection ? "↓ SAVE TO PDF" : `NEXT: ${sections[activeSectionIdx + 1].label.toUpperCase()} →`}
-                </button>
-              </div>
+              {/* Questions panel */}
+              {!showExport && activeSection && (
+                <>
+                  {/* Section description */}
+                  <div style={{
+                    background: "#fff", borderLeft: `4px solid ${activeSection.color}`,
+                    padding: "1rem 1.2rem", marginBottom: "1.2rem",
+                    fontSize: "clamp(0.88rem, 3.5vw, 0.95rem)", color: "#555", lineHeight: 1.8,
+                  }} className="section-desc">
+                    <strong style={{ color: "#1a1a1a" }}>{activeSection.icon} {activeSection.label} — </strong>
+                    {activeSection.description}
+                  </div>
 
-              <div style={{ textAlign: "center", marginTop: "1.5rem", color: "#aaa", fontSize: "0.95rem", fontStyle: "italic", lineHeight: 1.8 }}>
-                Your answers are private until you choose to share them.<br />
-                This framework is a starting point — not a contract. Be honest. Be kind.
-              </div>
-            </>
+                  {/* Questions */}
+                  {activeSection.questions.map((q) => {
+                    const isOpen = activeQ === q.id;
+                    const hasContent = q.fields.some((_, fi) => getValue(q.id, fi).length > 0);
+                    return (
+                      <div key={q.id} style={{
+                        background: "#fff",
+                        border: `1px solid ${isOpen ? activeSection.color : "#E5DDD0"}`,
+                        borderLeft: `4px solid ${isOpen ? activeSection.color : "#E5DDD0"}`,
+                        marginBottom: "0.8rem", transition: "border-color 0.2s",
+                      }}>
+                        <button onClick={() => setActiveQ(isOpen ? null : q.id)} style={{
+                          width: "100%", background: "none", border: "none",
+                          padding: "1rem clamp(0.8rem, 3vw, 1.2rem)",
+                          textAlign: "left", cursor: "pointer",
+                          display: "flex", alignItems: "center", gap: "0.6rem",
+                        }}>
+                          <span className="smart-badge" style={{
+                            background: smartColors[q.smart], color: "#fff",
+                            fontSize: "0.65rem", letterSpacing: "0.15em",
+                            padding: "2px 7px", borderRadius: 1, whiteSpace: "nowrap", flexShrink: 0,
+                          }}>
+                            {q.smart.toUpperCase()}
+                          </span>
+                          <span className="question-prompt" style={{ fontSize: "clamp(0.88rem, 3.5vw, 0.95rem)", color: "#1a1a1a", flex: 1, lineHeight: 1.4 }}>{q.prompt}</span>
+                          {hasContent && <span style={{ color: "#A8C5A0", fontSize: "1rem", flexShrink: 0 }}>✓</span>}
+                          <span style={{ color: "#aaa", fontSize: "0.9rem", flexShrink: 0 }}>{isOpen ? "▲" : "▼"}</span>
+                        </button>
+
+                        {isOpen && (
+                          <div style={{ padding: "0 clamp(0.8rem, 3vw, 1.5rem) 1.2rem" }}>
+                            {q.hint && (
+                              <div style={{ fontSize: "clamp(0.8rem, 3vw, 0.85rem)", color: "#aaa", marginBottom: "0.8rem", fontStyle: "italic" }}>
+                                Guiding thought: {q.hint}
+                              </div>
+                            )}
+                            <div style={{ background: "#F7F4EF", padding: "clamp(0.8rem, 3vw, 1.2rem)", marginBottom: "0.8rem", overflowX: "auto" }}>
+                              {renderSentence(q)}
+                            </div>
+                            <textarea
+                              placeholder="Any additional thoughts beyond the sentence above..."
+                              value={getValue(q.id, "notes")}
+                              onChange={(e) => setValue(q.id, "notes", e.target.value)}
+                              rows={3}
+                              style={{
+                                width: "100%", border: "1px solid #E5DDD0",
+                                padding: "0.8rem", fontSize: "clamp(0.88rem, 3.5vw, 0.95rem)",
+                                fontFamily: "inherit", color: "#333", background: "#fafafa",
+                                resize: "vertical", outline: "none",
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+
+                  {/* SMART legend */}
+                  <div style={{ marginTop: "1.2rem", padding: "1rem", background: "#fff", border: "1px solid #E5DDD0" }}>
+                    <div style={{ fontSize: "0.7rem", letterSpacing: "0.2em", color: "#aaa", marginBottom: "0.6rem" }}>SMART GOAL FRAMEWORK</div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                      {Object.entries(smartColors).map(([label, color]) => (
+                        <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                          <div style={{ width: 9, height: 9, background: color, borderRadius: "50%", flexShrink: 0 }} />
+                          <span style={{ fontSize: "clamp(0.75rem, 3vw, 0.82rem)", color: "#555" }}><strong>{label[0]}</strong>{label.slice(1)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Next button */}
+                  <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1.2rem" }}>
+                    <button
+                      onClick={handleNext}
+                      style={{
+                        background: "#1C1C1C",
+                        color: isLastSection ? "#C8A96E" : "#fff",
+                        border: "none",
+                        padding: "clamp(0.8rem, 3vw, 0.9rem) clamp(1.2rem, 5vw, 2.5rem)",
+                        fontSize: "clamp(0.78rem, 3vw, 0.88rem)",
+                        letterSpacing: "0.2em", cursor: "pointer", width: "100%",
+                      }}
+                    >
+                      {isLastSection ? "↓ SAVE TO PDF" : `NEXT: ${sections[activeSectionIdx + 1].label.toUpperCase()} →`}
+                    </button>
+                  </div>
+
+                  <div style={{ textAlign: "center", marginTop: "1.2rem", color: "#aaa", fontSize: "clamp(0.78rem, 3vw, 0.85rem)", fontStyle: "italic", lineHeight: 1.8, paddingBottom: "2rem" }}>
+                    Your answers are private until you choose to share them.<br />
+                    This framework is a starting point — not a contract. Be honest. Be kind.
+                  </div>
+                </>
+              )}
+            </div>
           )}
         </div>
       )}
