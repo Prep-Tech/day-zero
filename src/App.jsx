@@ -5,7 +5,7 @@ const sections = [
     id: "vision-partner",
     label: "As a Partner",
     icon: "◇",
-    color: "#588157",
+    color: "#E8587A",
     description: "This section is about you as a partner — not as a parent, not as a co-parent. Just you, and the person you want to show up as in this relationship. Answer honestly and speak only for yourself.",
     questions: [
       {
@@ -49,7 +49,7 @@ const sections = [
     id: "vision-parent",
     label: "As a Parent",
     icon: "△",
-    color: "#A3B18A",
+    color: "#F09E8C",
     description: "This section is about you as an individual parent — not about co-parenting, not about your partner's role. Focus on what you personally want to give your children, what you want to stop, and the legacy you want to leave them.",
     questions: [
       {
@@ -93,7 +93,7 @@ const sections = [
     id: "shared",
     label: "Shared Vision",
     icon: "✦",
-    color: "#3A5A40",
+    color: "#6B2D5B",
     shared: true,
     description: "This final section is still answered individually — each partner completes it separately using 'I think' and 'I feel' language. Once both of you are done, sit together and take turns reading your answers out loud. Listen without interrupting.",
     questions: [
@@ -137,11 +137,11 @@ const sections = [
 ];
 
 const smartColors = {
-  Specific: "#588157",
-  Measurable: "#3A5A40",
-  Achievable: "#A3B18A",
-  Relevant: "#344E41",
-  "Time-bound": "#DAD7CD",
+  Specific: "#6B2D5B",
+  Measurable: "#E8587A",
+  Achievable: "#F09E8C",
+  Relevant: "#F9CEBD",
+  "Time-bound": "#FEF0DB",
 };
 
 // Must be outside component to preserve input focus
@@ -177,12 +177,12 @@ const AutoInput = ({ placeholder, value, onChange, color }) => {
           onChange={onChange}
           style={{
             border: "none",
-            borderBottom: `2px solid ${color || "#588157"}`,
+            borderBottom: `2px solid ${color || "#E8587A"}`,
             background: "transparent",
             padding: "4px 4px",
             fontSize: "1.1rem",
             fontFamily: "'Montserrat', sans-serif",
-            color: "#1a1a1a",
+            color: "#6B2D5B",
             width: "100%",
             outline: "none",
             textAlign: "left",
@@ -206,12 +206,12 @@ const AutoInput = ({ placeholder, value, onChange, color }) => {
         onChange={onChange}
         style={{
           border: "none",
-          borderBottom: `2px solid ${color || "#588157"}`,
+          borderBottom: `2px solid ${color || "#E8587A"}`,
           background: "transparent",
           padding: "2px 6px",
           fontSize: "1.22rem",
           fontFamily: "'Montserrat', sans-serif",
-          color: "#1a1a1a",
+          color: "#6B2D5B",
           width: desktopWidth,
           outline: "none",
           textAlign: "center",
@@ -276,14 +276,14 @@ export default function DayZeroFramework() {
       if (y + height > pageH - margin) { doc.addPage(); y = margin; }
     };
 
-    doc.setFillColor(52, 78, 65);
+    doc.setFillColor(232, 88, 122);
     doc.rect(0, 0, pageW, 28, "F");
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
-    doc.setTextColor(163, 177, 138);
+    doc.setTextColor(254, 240, 219);
     doc.text("A FRAMEWORK FOR RENEWAL", pageW / 2, 10, { align: "center" });
     doc.setFontSize(20);
-    doc.setTextColor(218, 215, 205);
+    doc.setTextColor(254, 240, 219);
     doc.text("Day Zero", pageW / 2, 20, { align: "center" });
     y = 36;
 
@@ -293,22 +293,22 @@ export default function DayZeroFramework() {
     doc.text(`${displayName}  ·  ${date}`, pageW / 2, y, { align: "center" });
     y += 4;
 
-    doc.setDrawColor(88, 129, 87);
+    doc.setDrawColor(232, 88, 122);
     doc.setLineWidth(0.5);
     doc.line(margin, y, pageW - margin, y);
     y += 8;
 
     const sectionColors = {
-      "As a Partner": [88, 129, 87],
-      "As a Parent": [163, 177, 138],
-      "Shared Vision": [58, 90, 64],
+      "As a Partner": [232, 88, 122],
+      "As a Parent": [240, 158, 140],
+      "Shared Vision": [107, 45, 91],
     };
     const smartBg = {
-      Specific: [88, 129, 87],
-      Measurable: [58, 90, 64],
-      Achievable: [163, 177, 138],
-      Relevant: [52, 78, 65],
-      "Time-bound": [218, 215, 205],
+      Specific: [107, 45, 91],
+      Measurable: [232, 88, 122],
+      Achievable: [240, 158, 140],
+      Relevant: [249, 206, 189],
+      "Time-bound": [254, 240, 219],
     };
 
     sections.forEach((section) => {
@@ -329,12 +329,12 @@ export default function DayZeroFramework() {
         doc.roundedRect(margin, y, 28, 5.5, 1, 1, "F");
         doc.setFont("helvetica", "bold");
         doc.setFontSize(6.5);
-        doc.setTextColor(...(q.smart === "Time-bound" ? [52, 78, 65] : [255, 255, 255]));
+        doc.setTextColor(...(["Relevant", "Time-bound"].includes(q.smart) ? [107, 45, 91] : [255, 255, 255]));
         doc.text(q.smart.toUpperCase(), margin + 14, y + 3.8, { align: "center" });
 
         doc.setFont("helvetica", "bold");
         doc.setFontSize(9.5);
-        doc.setTextColor(30, 30, 30);
+        doc.setTextColor(107, 45, 91);
         doc.text(q.prompt, margin + 32, y + 3.8);
         y += 8;
 
@@ -346,14 +346,14 @@ export default function DayZeroFramework() {
         }).join("");
 
         addPageIfNeeded(8);
-        doc.setFillColor(247, 244, 239);
+        doc.setFillColor(254, 240, 219);
         const lines = doc.splitTextToSize(sentenceLine, usableW - 6);
         const boxH = lines.length * 5.5 + 5;
         addPageIfNeeded(boxH);
         doc.rect(margin, y, usableW, boxH, "F");
         doc.setFont("times", "normal");
         doc.setFontSize(10);
-        doc.setTextColor(30, 30, 30);
+        doc.setTextColor(107, 45, 91);
         doc.text(lines, margin + 3, y + 4.5);
         y += boxH + 2;
 
@@ -389,7 +389,7 @@ export default function DayZeroFramework() {
   const renderSentence = (question) => {
     const parts = question.sentence.split(/____/);
     return (
-      <div style={{ lineHeight: "2.6", fontSize: "1.22rem", color: "#2a2a2a", fontFamily: "'Montserrat', sans-serif" }}>
+      <div style={{ lineHeight: "2.6", fontSize: "1.22rem", color: "#6B2D5B", fontFamily: "'Montserrat', sans-serif" }}>
         {parts.map((part, i) => (
           <span key={i}>
             <span>{part}</span>
@@ -411,7 +411,7 @@ export default function DayZeroFramework() {
   const pct = Math.round((count / totalQuestions) * 100);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F7F4EF", fontFamily: "'Montserrat', sans-serif", color: "#1a1a1a" }}>
+    <div style={{ minHeight: "100vh", background: "#FEF0DB", fontFamily: "'Montserrat', sans-serif", color: "#6B2D5B" }}>
 
       {/* Mobile-first global styles */}
       <style>{`
@@ -427,33 +427,33 @@ export default function DayZeroFramework() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background: "#344E41", color: "#DAD7CD", padding: "1.5rem 1rem", textAlign: "center" }}>
-        <div style={{ fontSize: "0.94rem", letterSpacing: "0.3em", color: "#A3B18A", marginBottom: "0.4rem" }}>A FRAMEWORK FOR RENEWAL</div>
-        <h1 style={{ margin: 0, fontSize: "clamp(2.72rem, 7vw, 3.37rem)", fontWeight: "400", color: "#DAD7CD" }}>Day Zero</h1>
-        <p style={{ margin: "0.4rem 0 0", color: "#aaa", fontSize: "clamp(0.82rem, 3vw, 0.95rem)", fontStyle: "italic" }}>
+      <div style={{ background: "#E8587A", color: "#FEF0DB", padding: "1.5rem 1rem", textAlign: "center" }}>
+        <div style={{ fontSize: "0.94rem", letterSpacing: "0.3em", color: "#FEF0DB", marginBottom: "0.4rem", opacity: 0.8 }}>A FRAMEWORK FOR RENEWAL</div>
+        <h1 style={{ margin: 0, fontSize: "clamp(2.72rem, 7vw, 3.37rem)", fontWeight: "400", color: "#FEF0DB" }}>Day Zero</h1>
+        <p style={{ margin: "0.4rem 0 0", color: "#FEF0DB", opacity: 0.85, fontSize: "clamp(0.82rem, 3vw, 0.95rem)", fontStyle: "italic" }}>
           All past issues are forgiven and forgotten. Today we begin again.
         </p>
       </div>
 
       {/* Intro */}
       {!accepted && (
-        <div style={{ maxWidth: 620, margin: "2rem auto", background: "#fff", padding: "clamp(1.2rem, 5vw, 2.5rem)", border: "1px solid #DAD7CD" }}>
-          <div style={{ fontSize: "0.84rem", letterSpacing: "0.3em", color: "#588157", marginBottom: "1.1rem" }}>BEFORE YOU BEGIN</div>
+        <div style={{ maxWidth: 620, margin: "2rem auto", background: "#fff", padding: "clamp(1.2rem, 5vw, 2.5rem)", border: "1px solid #F9CEBD" }}>
+          <div style={{ fontSize: "0.84rem", letterSpacing: "0.3em", color: "#E8587A", marginBottom: "1.1rem" }}>BEFORE YOU BEGIN</div>
           <h2 style={{ fontWeight: 400, fontSize: "clamp(1.35rem, 5vw, 1.65rem)", marginTop: 0 }}>The Day Zero Premise</h2>
-          <p style={{ color: "#555", lineHeight: 1.8, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>
+          <p style={{ color: "#7A4068", lineHeight: 1.8, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>
             This exercise asks both of you to set aside everything that has happened and answer honestly about the future you <em>want</em> — not the past you're carrying.
           </p>
-          <p style={{ color: "#555", lineHeight: 1.8, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>There are no right answers. There is no winner. The only goal is clarity — for yourself, and then for each other.</p>
-          <ul style={{ color: "#555", lineHeight: 2, paddingLeft: "1.2rem", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
+          <p style={{ color: "#7A4068", lineHeight: 1.8, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>There are no right answers. There is no winner. The only goal is clarity — for yourself, and then for each other.</p>
+          <ul style={{ color: "#7A4068", lineHeight: 2, paddingLeft: "1.2rem", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
             <li>Each partner completes all three sections <strong>independently</strong></li>
             <li>Use the fill-in sentences to guide, not limit, what you want to say</li>
             <li>SMART goals keep intentions <strong>concrete and actionable</strong></li>
             <li>Save your answers as a PDF when you're ready to share</li>
           </ul>
-          <div style={{ background: "#F7F4EF", borderLeft: "3px solid #588157", padding: "1rem 1.2rem", margin: "1.5rem 0", fontStyle: "italic", color: "#555", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
+          <div style={{ background: "#FEF0DB", borderLeft: "3px solid #E8587A", padding: "1rem 1.2rem", margin: "1.5rem 0", fontStyle: "italic", color: "#7A4068", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
             "If today was Day Zero — all past issues forgiven and forgotten — how do you see your life going forward?"
           </div>
-          <button onClick={() => setAccepted(true)} style={{ background: "#344E41", color: "#DAD7CD", border: "none", padding: "1rem 2rem", fontSize: "clamp(0.92rem, 3vw, 1.02rem)", letterSpacing: "0.2em", cursor: "pointer", width: "100%" }}>
+          <button onClick={() => setAccepted(true)} style={{ background: "#E8587A", color: "#FEF0DB", border: "none", padding: "1rem 2rem", fontSize: "clamp(0.92rem, 3vw, 1.02rem)", letterSpacing: "0.2em", cursor: "pointer", width: "100%" }}>
             I ACCEPT THE PREMISE — BEGIN
           </button>
         </div>
@@ -464,8 +464,8 @@ export default function DayZeroFramework() {
 
           {/* Name entry */}
           {!nameSubmitted && (
-            <div style={{ maxWidth: 480, margin: "0 auto 2rem", background: "#fff", border: "1px solid #DAD7CD", padding: "clamp(1.35rem, 5vw, 2.12rem)" }}>
-              <div style={{ fontSize: "1rem", letterSpacing: "0.25em", color: "#588157", marginBottom: "0.8rem" }}>BEFORE YOU BEGIN</div>
+            <div style={{ maxWidth: 480, margin: "0 auto 2rem", background: "#fff", border: "1px solid #F9CEBD", padding: "clamp(1.35rem, 5vw, 2.12rem)" }}>
+              <div style={{ fontSize: "1rem", letterSpacing: "0.25em", color: "#E8587A", marginBottom: "0.8rem" }}>BEFORE YOU BEGIN</div>
               <h2 style={{ fontWeight: 400, fontSize: "clamp(1.35rem, 5vw, 1.65rem)", marginBottom: "0.5rem" }}>What is your name?</h2>
               <p style={{ color: "#777", fontSize: "clamp(1rem, 3.5vw, 1.12rem)", lineHeight: 1.7, marginBottom: "1.5rem" }}>
                 Your name will appear on your exported PDF so your partner knows whose answers they're reading.
@@ -477,10 +477,10 @@ export default function DayZeroFramework() {
                 onChange={(e) => setUserName(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && userName.trim()) setNameSubmitted(true); }}
                 style={{
-                  width: "100%", border: "none", borderBottom: "2px solid #588157",
+                  width: "100%", border: "none", borderBottom: "2px solid #E8587A",
                   background: "transparent", padding: "0.6rem 0.3rem",
                   fontSize: "clamp(1.25rem, 5vw, 1.45rem)",
-                  fontFamily: "'Montserrat', sans-serif", color: "#1a1a1a", outline: "none",
+                  fontFamily: "'Montserrat', sans-serif", color: "#6B2D5B", outline: "none",
                   marginBottom: "1.5rem",
                 }}
               />
@@ -488,8 +488,8 @@ export default function DayZeroFramework() {
                 onClick={() => { if (userName.trim()) setNameSubmitted(true); }}
                 disabled={!userName.trim()}
                 style={{
-                  background: userName.trim() ? "#344E41" : "#ddd",
-                  color: userName.trim() ? "#DAD7CD" : "#aaa",
+                  background: userName.trim() ? "#E8587A" : "#ddd",
+                  color: userName.trim() ? "#FEF0DB" : "#aaa",
                   border: "none", padding: "1rem 2rem",
                   fontSize: "clamp(0.92rem, 3vw, 1.02rem)",
                   letterSpacing: "0.2em", cursor: userName.trim() ? "pointer" : "default", width: "100%",
@@ -510,7 +510,7 @@ export default function DayZeroFramework() {
                       <button
                         onClick={() => { setActiveSectionIdx(i); setActiveQ(null); setShowExport(false); }}
                         style={{
-                          background: showExport ? "#eee" : activeSectionIdx === i ? s.color : activeSectionIdx > i ? "#344E41" : "#fff",
+                          background: showExport ? "#eee" : activeSectionIdx === i ? s.color : activeSectionIdx > i ? "#E8587A" : "#fff",
                           color: showExport ? "#aaa" : activeSectionIdx === i ? "#fff" : activeSectionIdx > i ? s.color : "#bbb",
                           border: `2px solid ${!showExport && activeSectionIdx >= i ? s.color : "#ddd"}`,
                           borderRadius: "50%", width: 36, height: 36,
@@ -524,7 +524,7 @@ export default function DayZeroFramework() {
                         {s.label.toUpperCase()}
                       </div>
                     </div>
-                    <div style={{ width: "clamp(16px, 4vw, 36px)", height: 1, background: activeSectionIdx > i && !showExport ? "#588157" : "#ddd", margin: "0 2px", marginBottom: "1.2rem", flexShrink: 0 }} />
+                    <div style={{ width: "clamp(16px, 4vw, 36px)", height: 1, background: activeSectionIdx > i && !showExport ? "#E8587A" : "#ddd", margin: "0 2px", marginBottom: "1.2rem", flexShrink: 0 }} />
                   </div>
                 ))}
                 {/* PDF step */}
@@ -532,9 +532,9 @@ export default function DayZeroFramework() {
                   <button
                     onClick={() => setShowExport(true)}
                     style={{
-                      background: showExport ? "#588157" : "#fff",
+                      background: showExport ? "#E8587A" : "#fff",
                       color: showExport ? "#fff" : "#aaa",
-                      border: `2px solid ${showExport ? "#588157" : "#ddd"}`,
+                      border: `2px solid ${showExport ? "#E8587A" : "#ddd"}`,
                       borderRadius: "50%", width: 36, height: 36,
                       fontSize: "0.97rem", cursor: "pointer",
                       display: "flex", alignItems: "center", justifyContent: "center",
@@ -542,7 +542,7 @@ export default function DayZeroFramework() {
                   >
                     ↓
                   </button>
-                  <div className="stepper-label" style={{ fontSize: "0.94rem", letterSpacing: "0.1em", color: showExport ? "#588157" : "#aaa", whiteSpace: "nowrap" }}>
+                  <div className="stepper-label" style={{ fontSize: "0.94rem", letterSpacing: "0.1em", color: showExport ? "#E8587A" : "#aaa", whiteSpace: "nowrap" }}>
                     SAVE PDF
                   </div>
                 </div>
@@ -550,27 +550,27 @@ export default function DayZeroFramework() {
 
               {/* Export panel */}
               {showExport && (
-                <div style={{ background: "#fff", border: "1px solid #588157", padding: "clamp(1.35rem, 5vw, 2.12rem)", marginBottom: "2rem" }}>
-                  <div style={{ fontSize: "0.84rem", letterSpacing: "0.25em", color: "#588157", marginBottom: "0.5rem" }}>SAVE YOUR ANSWERS</div>
+                <div style={{ background: "#fff", border: "1px solid #E8587A", padding: "clamp(1.35rem, 5vw, 2.12rem)", marginBottom: "2rem" }}>
+                  <div style={{ fontSize: "0.84rem", letterSpacing: "0.25em", color: "#E8587A", marginBottom: "0.5rem" }}>SAVE YOUR ANSWERS</div>
                   <h2 style={{ fontWeight: 400, fontSize: "clamp(1.1rem, 5vw, 1.4rem)", marginBottom: "0.8rem" }}>
                     Ready to share, {userName}?
                   </h2>
-                  <p style={{ color: "#555", fontSize: "clamp(1rem, 3.5vw, 1.12rem)", lineHeight: 1.8, marginBottom: "1.5rem" }}>
+                  <p style={{ color: "#7A4068", fontSize: "clamp(1rem, 3.5vw, 1.12rem)", lineHeight: 1.8, marginBottom: "1.5rem" }}>
                     Your answers will be saved as a PDF. Share it with your partner — or a counsellor — when you feel ready.
                   </p>
 
                   {/* Progress + button stacked on mobile */}
-                  <div style={{ background: "#F7F4EF", border: "1px solid #DAD7CD", padding: "1.2rem", marginBottom: "0.8rem" }}>
-                    <div style={{ fontSize: "clamp(0.94rem, 3.5vw, 1.02rem)", color: "#555", marginBottom: "0.8rem" }}>
+                  <div style={{ background: "#FEF0DB", border: "1px solid #F9CEBD", padding: "1.2rem", marginBottom: "0.8rem" }}>
+                    <div style={{ fontSize: "clamp(0.94rem, 3.5vw, 1.02rem)", color: "#7A4068", marginBottom: "0.8rem" }}>
                       <strong>{userName}</strong> — {count} of {totalQuestions} questions answered
                     </div>
                     <div style={{ height: 6, background: "#eee", borderRadius: 3, marginBottom: "1.2rem" }}>
-                      <div style={{ height: 6, background: "#588157", borderRadius: 3, width: `${pct}%`, transition: "width 0.4s" }} />
+                      <div style={{ height: 6, background: "#E8587A", borderRadius: 3, width: `${pct}%`, transition: "width 0.4s" }} />
                     </div>
                     <button
                       onClick={handleExport}
                       style={{
-                        background: "#344E41", color: "#DAD7CD", border: "none",
+                        background: "#E8587A", color: "#FEF0DB", border: "none",
                         padding: "0.9rem 1.5rem", fontSize: "clamp(0.92rem, 3vw, 1rem)",
                         letterSpacing: "0.15em", cursor: "pointer", width: "100%",
                       }}
@@ -588,9 +588,9 @@ export default function DayZeroFramework() {
                   <div style={{
                     background: "#fff", borderLeft: `4px solid ${activeSection.color}`,
                     padding: "1rem 1.2rem", marginBottom: "1.2rem",
-                    fontSize: "clamp(1rem, 3.5vw, 1.08rem)", color: "#555", lineHeight: 1.8,
+                    fontSize: "clamp(1rem, 3.5vw, 1.08rem)", color: "#7A4068", lineHeight: 1.8,
                   }} className="section-desc">
-                    <strong style={{ color: "#1a1a1a" }}>{activeSection.icon} {activeSection.label} — </strong>
+                    <strong style={{ color: "#6B2D5B" }}>{activeSection.icon} {activeSection.label} — </strong>
                     {activeSection.description}
                   </div>
 
@@ -601,8 +601,8 @@ export default function DayZeroFramework() {
                     return (
                       <div key={q.id} style={{
                         background: "#fff",
-                        border: `1px solid ${isOpen ? activeSection.color : "#DAD7CD"}`,
-                        borderLeft: `4px solid ${isOpen ? activeSection.color : "#DAD7CD"}`,
+                        border: `1px solid ${isOpen ? activeSection.color : "#F9CEBD"}`,
+                        borderLeft: `4px solid ${isOpen ? activeSection.color : "#F9CEBD"}`,
                         marginBottom: "0.8rem", transition: "border-color 0.2s",
                       }}>
                         <button onClick={() => setActiveQ(isOpen ? null : q.id)} style={{
@@ -613,18 +613,18 @@ export default function DayZeroFramework() {
                         }}>
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                             <span className="smart-badge" style={{
-                              background: smartColors[q.smart], color: q.smart === "Time-bound" ? "#344E41" : "#fff",
+                              background: smartColors[q.smart], color: ["Relevant", "Time-bound"].includes(q.smart) ? "#6B2D5B" : "#fff",
                               fontSize: "0.77rem", letterSpacing: "0.15em",
                               padding: "3px 9px", borderRadius: 1, whiteSpace: "nowrap",
                             }}>
                               {q.smart.toUpperCase()}
                             </span>
                             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                              {hasContent && <span style={{ color: "#588157", fontSize: "1.1rem" }}>✓</span>}
+                              {hasContent && <span style={{ color: "#E8587A", fontSize: "1.1rem" }}>✓</span>}
                               <span style={{ color: "#aaa", fontSize: "1rem" }}>{isOpen ? "▲" : "▼"}</span>
                             </div>
                           </div>
-                          <span className="question-prompt" style={{ fontSize: "clamp(1rem, 3.5vw, 1.08rem)", color: "#1a1a1a", lineHeight: 1.4, display: "block" }}>{q.prompt}</span>
+                          <span className="question-prompt" style={{ fontSize: "clamp(1rem, 3.5vw, 1.08rem)", color: "#6B2D5B", lineHeight: 1.4, display: "block" }}>{q.prompt}</span>
                         </button>
 
                         {isOpen && (
@@ -634,7 +634,7 @@ export default function DayZeroFramework() {
                                 Guiding thought: {q.hint}
                               </div>
                             )}
-                            <div style={{ background: "#F7F4EF", padding: "clamp(0.8rem, 3vw, 1.2rem)", marginBottom: "0.8rem", overflowX: "hidden" }}>
+                            <div style={{ background: "#FEF0DB", padding: "clamp(0.8rem, 3vw, 1.2rem)", marginBottom: "0.8rem", overflowX: "hidden" }}>
                               {renderSentence(q)}
                             </div>
                             <textarea
@@ -643,9 +643,9 @@ export default function DayZeroFramework() {
                               onChange={(e) => setValue(q.id, "notes", e.target.value)}
                               rows={3}
                               style={{
-                                width: "100%", border: "1px solid #DAD7CD",
+                                width: "100%", border: "1px solid #F9CEBD",
                                 padding: "0.8rem", fontSize: "clamp(1rem, 3.5vw, 1.08rem)",
-                                fontFamily: "inherit", color: "#333", background: "#fafafa",
+                                fontFamily: "inherit", color: "#6B2D5B", background: "#fafafa",
                                 resize: "vertical", outline: "none",
                               }}
                             />
@@ -656,13 +656,13 @@ export default function DayZeroFramework() {
                   })}
 
                   {/* SMART legend */}
-                  <div style={{ marginTop: "1.2rem", padding: "1.1rem", background: "#fff", border: "1px solid #DAD7CD" }}>
+                  <div style={{ marginTop: "1.2rem", padding: "1.1rem", background: "#fff", border: "1px solid #F9CEBD" }}>
                     <div style={{ fontSize: "0.94rem", letterSpacing: "0.2em", color: "#aaa", marginBottom: "0.72rem" }}>SMART GOAL FRAMEWORK</div>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
                       {Object.entries(smartColors).map(([label, color]) => (
                         <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
                           <div style={{ width: 9, height: 9, background: color, borderRadius: "50%", flexShrink: 0 }} />
-                          <span style={{ fontSize: "clamp(0.87rem, 3vw, 0.94rem)", color: "#555" }}><strong>{label[0]}</strong>{label.slice(1)}</span>
+                          <span style={{ fontSize: "clamp(0.87rem, 3vw, 0.94rem)", color: "#7A4068" }}><strong>{label[0]}</strong>{label.slice(1)}</span>
                         </div>
                       ))}
                     </div>
@@ -673,8 +673,8 @@ export default function DayZeroFramework() {
                     <button
                       onClick={handleNext}
                       style={{
-                        background: "#344E41",
-                        color: isLastSection ? "#DAD7CD" : "#fff",
+                        background: "#E8587A",
+                        color: isLastSection ? "#FEF0DB" : "#fff",
                         border: "none",
                         padding: "clamp(0.92rem, 3vw, 1.02rem) clamp(1.2rem, 5vw, 2.5rem)",
                         fontSize: "clamp(0.78rem, 3vw, 0.88rem)",
