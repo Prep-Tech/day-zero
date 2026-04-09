@@ -652,7 +652,7 @@ export default function DayZeroFramework() {
           .smart-badge { font-size: 0.6rem !important; padding: 2px 5px !important; }
           .smart-legend { flex-direction: column; }
           .premise-grid { flex-direction: column; }
-          .form-layout { flex-direction: column; }
+          .form-layout { flex-direction: column !important; }
           .quote-column { display: none !important; }
           .steps-grid { flex-direction: column; align-items: stretch !important; }
           .benefits-grid { flex-direction: column; }
@@ -888,8 +888,8 @@ export default function DayZeroFramework() {
 
           {/* Questions panel — in flex layout */}
           {!showExport && activeSection && (
-            <div className="form-layout" style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
-            <div style={{ flex: "1 1 400px", maxWidth: "100%" }}>
+            <div className="form-layout" style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
+            <div style={{ flex: "1 1 0%", minWidth: 0 }}>
                 <>
                   {/* Section description */}
                   <div style={{
@@ -1000,7 +1000,7 @@ export default function DayZeroFramework() {
             </div>
             {/* Right column — placeholder for quotes (next step) */}
             {/* Right column — contextual quote */}
-            <div className="quote-column" style={{ flex: "1 1 280px", minWidth: 0, position: "sticky", top: "1rem", alignSelf: "flex-start", maxHeight: "calc(100vh - 2rem)" }}>
+            <div className="quote-column" style={{ width: 300, flexShrink: 0, position: "sticky", top: "1rem", alignSelf: "flex-start" }}>
               {(() => {
                 const activeQuestion = activeSection?.questions?.find(q => q.id === activeQ);
                 const color = activeSection?.color || "#3AAFB9";
