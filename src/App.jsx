@@ -761,7 +761,7 @@ export default function DayZeroFramework() {
           )}
 
           {/* Guest name prompt — only if not logged in and name not set */}
-          {!user && !userName.trim() && (
+          {!user && !nameSubmitted && (
             <div style={{ maxWidth: 480, margin: "0 auto 1.5rem", background: "#fff", border: "1px solid #e0dcd7", padding: "clamp(1.2rem, 5vw, 2rem)" }}>
               <h2 style={{ fontWeight: 400, fontSize: "clamp(1.2rem, 4vw, 1.4rem)", marginTop: 0, marginBottom: "0.5rem" }}>What is your name?</h2>
               <p style={{ color: "#777", fontSize: "clamp(0.9rem, 3vw, 1rem)", lineHeight: 1.2, marginBottom: "1rem" }}>
@@ -798,7 +798,7 @@ export default function DayZeroFramework() {
           )}
 
           {/* Main questionnaire — show once we have a name */}
-          {(user || userName.trim()) && (
+          {(user || nameSubmitted) && (
           <div>
               {/* Progress stepper */}
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center", marginBottom: "1.5rem", overflowX: "auto", paddingBottom: "0.25rem" }}>
