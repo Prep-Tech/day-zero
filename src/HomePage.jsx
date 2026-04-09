@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const section = (bg, children) => (
   <div style={{ background: bg, padding: "clamp(2.5rem, 8vw, 5rem) clamp(1rem, 5vw, 2rem)" }}>
@@ -22,7 +22,7 @@ const MockupCard = () => (
   <div style={{
     background: "#fff", border: "1px solid #e0dcd7", borderRadius: 6,
     padding: "1.5rem", maxWidth: 480, boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
-    transform: "rotate(-1deg)", margin: "0 auto",
+    transform: "none", margin: "0 auto",
   }}>
     {/* Stepper dots */}
     <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1.2rem", justifyContent: "center" }}>
@@ -56,8 +56,61 @@ const MockupCard = () => (
 );
 
 export default function HomePage({ onBegin, onSignUp, user }) {
+  const [showModal, setShowModal] = useState(false);
+
+  const handleCTA = () => {
+    if (user) {
+      onBegin();
+    } else {
+      setShowModal(true);
+    }
+  };
+
   return (
     <div>
+      {/* CTA Modal */}
+      {showModal && (
+        <div onClick={() => setShowModal(false)} style={{
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          zIndex: 999, padding: "1rem",
+        }}>
+          <div onClick={(e) => e.stopPropagation()} style={{
+            background: "#fff", maxWidth: 460, width: "100%",
+            padding: "clamp(1.5rem, 5vw, 2.5rem)", borderRadius: 6,
+            boxShadow: "0 12px 40px rgba(0,0,0,0.15)",
+            textAlign: "center",
+          }}>
+            <h3 style={{ margin: "0 0 0.8rem", fontSize: "1.3rem", fontWeight: 600, color: "#1a1a1a" }}>Before you dive in...</h3>
+            <p style={{ color: "#555", fontSize: "0.95rem", lineHeight: 1.6, margin: "0 0 0.5rem" }}>
+              This framework has 15 questions across 3 sections. It can be a lot to do in one sitting.
+            </p>
+            <p style={{ color: "#555", fontSize: "0.95rem", lineHeight: 1.6, margin: "0 0 1.5rem" }}>
+              Signing up lets you <strong>save your progress</strong> and come back whenever you're ready. No pressure, ever — it's completely free.
+            </p>
+            <button onClick={() => { setShowModal(false); onSignUp(); }} style={{
+              background: "#3AAFB9", color: "#fff", border: "none",
+              padding: "0.9rem 2rem", fontSize: "0.95rem", letterSpacing: "0.15em",
+              cursor: "pointer", width: "100%", borderRadius: 3,
+              fontWeight: 600, fontFamily: "'Montserrat', sans-serif",
+              marginBottom: "0.8rem",
+            }}>
+              SIGN UP TO SAVE PROGRESS
+            </button>
+            <button onClick={() => { setShowModal(false); onBegin(); }} style={{
+              background: "transparent", color: "#3AAFB9", border: "1px solid #3AAFB9",
+              padding: "0.9rem 2rem", fontSize: "0.95rem", letterSpacing: "0.15em",
+              cursor: "pointer", width: "100%", borderRadius: 3,
+              fontWeight: 600, fontFamily: "'Montserrat', sans-serif",
+            }}>
+              JUST DIVE RIGHT IN
+            </button>
+            <p style={{ color: "#aaa", fontSize: "0.8rem", marginTop: "0.8rem", marginBottom: 0 }}>
+              You can always sign up later from the header.
+            </p>
+          </div>
+        </div>
+      )}
       {/* ═══ HERO ═══ */}
       <div style={{
         background: "linear-gradient(135deg, #3AAFB9 0%, #2d8f97 100%)",
@@ -74,7 +127,7 @@ export default function HomePage({ onBegin, onSignUp, user }) {
           <p style={{ fontSize: "clamp(0.95rem, 2.5vw, 1.1rem)", lineHeight: 1.5, opacity: 0.78, margin: "0 0 2rem" }}>
             No therapist required. No awkward silences. Just clarity.
           </p>
-          {ctaBtn(onBegin, "START YOUR DAY ZERO")}
+          {ctaBtn(handleCTA, "START YOUR DAY ZERO")}
         </div>
       </div>
 
@@ -115,8 +168,8 @@ export default function HomePage({ onBegin, onSignUp, user }) {
                 padding: "1.5rem", borderRadius: "0 0 4px 4px",
               }}>
                 <div style={{ fontSize: "2rem", fontWeight: 700, color: s.color, marginBottom: "0.4rem" }}>{s.num}</div>
-                <h4 style={{ margin: "0 0 0.5rem", fontSize: "1.1rem", color: "#1a1a1a" }}>{s.title}</h4>
-                <p style={{ margin: 0, color: "#555", fontSize: "0.95rem", lineHeight: 1.5 }}>{s.desc}</p>
+                <h4 style={{ margin: "0 0 0.5rem", fontSize: "1.4rem", fontWeight: 700, color: "#1a1a1a" }}>{s.title}</h4>
+                <p style={{ margin: 0, color: "#555", fontSize: "0.88rem", lineHeight: 1.5 }}>{s.desc}</p>
               </div>
             ))}
           </div>
@@ -144,8 +197,8 @@ export default function HomePage({ onBegin, onSignUp, user }) {
                 background: "#F7F4EF", borderRadius: 4,
               }}>
                 <div style={{ fontSize: "1.5rem", color: "#3AAFB9", marginBottom: "0.5rem" }}>{b.icon}</div>
-                <h4 style={{ margin: "0 0 0.5rem", fontSize: "1.05rem", color: "#1a1a1a" }}>{b.title}</h4>
-                <p style={{ margin: 0, color: "#555", fontSize: "0.92rem", lineHeight: 1.5 }}>{b.desc}</p>
+                <h4 style={{ margin: "0 0 0.5rem", fontSize: "1.25rem", fontWeight: 700, color: "#1a1a1a" }}>{b.title}</h4>
+                <p style={{ margin: 0, color: "#555", fontSize: "0.88rem", lineHeight: 1.5 }}>{b.desc}</p>
               </div>
             ))}
           </div>
@@ -166,7 +219,7 @@ export default function HomePage({ onBegin, onSignUp, user }) {
             <p style={{ color: "#555", fontSize: "clamp(0.95rem, 3vw, 1.08rem)", lineHeight: 1.6, margin: "0 0 1.5rem" }}>
               Colour-coded categories — <strong>Specific</strong>, <strong>Measurable</strong>, <strong>Achievable</strong>, <strong>Relevant</strong>, and <strong>Time-bound</strong> — ensure your intentions are concrete, not vague.
             </p>
-            {ctaBtn(onBegin, "TRY IT NOW — FREE")}
+            {ctaBtn(handleCTA, "TRY IT NOW — FREE")}
           </div>
           <div style={{ flex: "1 1 340px", minWidth: 0 }}>
             <MockupCard />
@@ -192,7 +245,7 @@ export default function HomePage({ onBegin, onSignUp, user }) {
           <p style={{ color: "#555", fontSize: "clamp(0.95rem, 3vw, 1.08rem)", lineHeight: 1.6, margin: "0 0 2rem" }}>
             That's the only question that matters. Everything in this framework is built to help you answer it — honestly, independently, and without fear.
           </p>
-          {ctaBtn(onBegin, "I ACCEPT THE PREMISE — BEGIN")}
+          {ctaBtn(handleCTA, "I ACCEPT THE PREMISE — BEGIN")}
           {!user && (
             <p style={{ color: "#3AAFB9", fontSize: "0.85rem", marginTop: "1rem", marginBottom: 0 }}>
               Want to save your progress? <button onClick={onSignUp} style={{ background: "none", border: "none", color: "#3AAFB9", fontWeight: 600, cursor: "pointer", fontFamily: "'Montserrat', sans-serif", fontSize: "0.85rem", textDecoration: "underline", padding: 0 }}>Sign up for free</button>
