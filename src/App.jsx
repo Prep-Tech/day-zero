@@ -538,7 +538,7 @@ export default function DayZeroFramework() {
   const renderSentence = (question) => {
     const parts = question.sentence.split(/____/);
     return (
-      <div style={{ lineHeight: "2.6", fontSize: "1.22rem", color: "#1a1a1a", fontFamily: "'Montserrat', sans-serif" }}>
+      <div style={{ lineHeight: "2.2", fontSize: "1.22rem", color: "#1a1a1a", fontFamily: "'Montserrat', sans-serif" }}>
         {parts.map((part, i) => (
           <span key={i}>
             <span>{part}</span>
@@ -699,11 +699,11 @@ export default function DayZeroFramework() {
           <div style={{ background: "#fff", padding: "clamp(1.2rem, 5vw, 2.5rem)", border: "1px solid #e0dcd7" }}>
             <div style={{ fontSize: "0.84rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "1.1rem" }}>BEFORE YOU BEGIN</div>
             <h2 style={{ fontWeight: 400, fontSize: "clamp(1.35rem, 5vw, 1.65rem)", marginTop: 0 }}>The Day Zero Premise</h2>
-            <p style={{ color: "#444", lineHeight: 1.8, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>
+            <p style={{ color: "#444", lineHeight: 1.2, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>
               This exercise asks both of you to set aside everything that has happened and answer honestly about the future you <em>want</em> — not the past you're carrying.
             </p>
-            <p style={{ color: "#444", lineHeight: 1.8, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>There are no right answers. There is no winner. The only goal is clarity — for yourself, and then for each other.</p>
-            <ul style={{ color: "#444", lineHeight: 2, paddingLeft: "1.2rem", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
+            <p style={{ color: "#444", lineHeight: 1.2, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>There are no right answers. There is no winner. The only goal is clarity — for yourself, and then for each other.</p>
+            <ul style={{ color: "#444", lineHeight: 1.2, paddingLeft: "1.2rem", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
               <li>Each partner completes all three sections <strong>independently</strong></li>
               <li>Use the fill-in sentences to guide, not limit, what you want to say</li>
               <li>SMART goals keep intentions <strong>concrete and actionable</strong></li>
@@ -750,7 +750,7 @@ export default function DayZeroFramework() {
           {!user && !userName.trim() && (
             <div style={{ maxWidth: 480, margin: "0 auto 1.5rem", background: "#fff", border: "1px solid #e0dcd7", padding: "clamp(1.2rem, 5vw, 2rem)" }}>
               <h2 style={{ fontWeight: 400, fontSize: "clamp(1.2rem, 4vw, 1.4rem)", marginTop: 0, marginBottom: "0.5rem" }}>What is your name?</h2>
-              <p style={{ color: "#777", fontSize: "clamp(0.9rem, 3vw, 1rem)", lineHeight: 1.7, marginBottom: "1rem" }}>
+              <p style={{ color: "#777", fontSize: "clamp(0.9rem, 3vw, 1rem)", lineHeight: 1.2, marginBottom: "1rem" }}>
                 Your name will appear on your exported PDF.
               </p>
               <input
@@ -844,7 +844,7 @@ export default function DayZeroFramework() {
                   <h2 style={{ fontWeight: 400, fontSize: "clamp(1.1rem, 5vw, 1.4rem)", marginBottom: "0.8rem" }}>
                     Ready to share, {userName}?
                   </h2>
-                  <p style={{ color: "#444", fontSize: "clamp(1rem, 3.5vw, 1.12rem)", lineHeight: 1.8, marginBottom: "1.5rem" }}>
+                  <p style={{ color: "#444", fontSize: "clamp(1rem, 3.5vw, 1.12rem)", lineHeight: 1.2, marginBottom: "1.5rem" }}>
                     Your answers will be saved as a PDF. Share it with your partner — or a counsellor — when you feel ready.
                   </p>
 
@@ -877,7 +877,7 @@ export default function DayZeroFramework() {
                   <div style={{
                     background: "#fff", borderLeft: `4px solid ${activeSection.color}`,
                     padding: "1rem 1.2rem", marginBottom: "1.2rem",
-                    fontSize: "clamp(1rem, 3.5vw, 1.08rem)", color: "#444", lineHeight: 1.8,
+                    fontSize: "clamp(1rem, 3.5vw, 1.08rem)", color: "#444", lineHeight: 1.2,
                   }} className="section-desc">
                     <strong style={{ color: "#1a1a1a" }}>{activeSection.icon} {activeSection.label} — </strong>
                     {activeSection.description}
@@ -913,7 +913,7 @@ export default function DayZeroFramework() {
                               <span style={{ color: "#aaa", fontSize: "1rem" }}>{isOpen ? "▲" : "▼"}</span>
                             </div>
                           </div>
-                          <span className="question-prompt" style={{ fontSize: "clamp(1rem, 3.5vw, 1.08rem)", color: "#1a1a1a", lineHeight: 1.4, display: "block" }}>{q.prompt}</span>
+                          <span className="question-prompt" style={{ fontSize: "clamp(1rem, 3.5vw, 1.08rem)", color: "#1a1a1a", lineHeight: 1.2, display: "block" }}>{q.prompt}</span>
                         </button>
 
                         {isOpen && (
@@ -974,7 +974,7 @@ export default function DayZeroFramework() {
                     </button>
                   </div>
 
-                  <div style={{ textAlign: "center", marginTop: "1.2rem", color: "#aaa", fontSize: "clamp(0.9rem, 3vw, 0.97rem)", fontStyle: "italic", lineHeight: 1.8, paddingBottom: "2rem" }}>
+                  <div style={{ textAlign: "center", marginTop: "1.2rem", color: "#aaa", fontSize: "clamp(0.9rem, 3vw, 0.97rem)", fontStyle: "italic", lineHeight: 1.2, paddingBottom: "2rem" }}>
                     Your answers are private until you choose to share them.<br />
                     This framework is a starting point — not a contract. Be honest. Be kind.
                   </div>
