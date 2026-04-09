@@ -691,28 +691,33 @@ export default function DayZeroFramework() {
         </div>
       )}
 
-      {/* Intro / Premise — 2 column on desktop */}
+      {/* Intro / Premise */}
       {!accepted && !showAuthPage && (
-        <div style={{ maxWidth: 960, margin: "2rem auto", padding: "0 clamp(0.8rem, 4vw, 1.5rem)" }}>
+        <div style={{ maxWidth: 1100, margin: "2rem auto", padding: "0 clamp(0.8rem, 4vw, 2rem)" }}>
           <div style={{ background: "#fff", border: "1px solid #e0dcd7", padding: "clamp(1.2rem, 5vw, 2.5rem)" }}>
+            {/* Top — full width heading + intro text */}
+            <div style={{ marginBottom: "1.5rem" }}>
+              <div style={{ fontSize: "0.84rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "1.1rem" }}>BEFORE YOU BEGIN</div>
+              <h2 style={{ fontWeight: 400, fontSize: "clamp(1.35rem, 5vw, 1.65rem)", marginTop: 0 }}>The Day Zero Premise</h2>
+              <p style={{ color: "#444", lineHeight: 1.2, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>
+                This exercise asks both of you to set aside everything that has happened and answer honestly about the future you <em>want</em> — not the past you're carrying.
+              </p>
+              <p style={{ color: "#444", lineHeight: 1.2, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)", marginBottom: 0 }}>There are no right answers. There is no winner. The only goal is clarity — for yourself, and then for each other.</p>
+            </div>
+
+            {/* Bottom — 2 columns */}
             <div className="premise-grid" style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
-              {/* Left column — heading + explanation */}
+              {/* Left — bullet points */}
               <div style={{ flex: "1 1 300px", minWidth: 0 }}>
-                <div style={{ fontSize: "0.84rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "1.1rem" }}>BEFORE YOU BEGIN</div>
-                <h2 style={{ fontWeight: 400, fontSize: "clamp(1.35rem, 5vw, 1.65rem)", marginTop: 0 }}>The Day Zero Premise</h2>
-                <p style={{ color: "#444", lineHeight: 1.2, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>
-                  This exercise asks both of you to set aside everything that has happened and answer honestly about the future you <em>want</em> — not the past you're carrying.
-                </p>
-                <p style={{ color: "#444", lineHeight: 1.2, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>There are no right answers. There is no winner. The only goal is clarity — for yourself, and then for each other.</p>
-                <ul style={{ color: "#444", lineHeight: 1.2, paddingLeft: "1.2rem", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
-                  <li>Each partner completes all three sections <strong>independently</strong></li>
-                  <li>Use the fill-in sentences to guide, not limit, what you want to say</li>
-                  <li>SMART goals keep intentions <strong>concrete and actionable</strong></li>
+                <ul style={{ color: "#444", lineHeight: 1.2, paddingLeft: "1.2rem", fontSize: "clamp(1rem, 3.5vw, 1.12rem)", margin: 0 }}>
+                  <li style={{ marginBottom: "0.6rem" }}>Each partner completes all three sections <strong>independently</strong></li>
+                  <li style={{ marginBottom: "0.6rem" }}>Use the fill-in sentences to guide, not limit, what you want to say</li>
+                  <li style={{ marginBottom: "0.6rem" }}>SMART goals keep intentions <strong>concrete and actionable</strong></li>
                   <li>Save your answers as a PDF when you're ready to share</li>
                 </ul>
               </div>
-              {/* Right column — quote + button */}
-              <div style={{ flex: "1 1 260px", minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              {/* Right — quote + button */}
+              <div style={{ flex: "1 1 280px", minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
                 <div style={{ background: "#F7F4EF", borderLeft: "3px solid #3AAFB9", padding: "1rem 1.2rem", fontStyle: "italic", color: "#444", fontSize: "clamp(1rem, 3.5vw, 1.12rem)", marginBottom: "1.5rem" }}>
                   "If today was Day Zero — all past issues forgiven and forgotten — how do you see your life going forward?"
                 </div>
@@ -731,7 +736,7 @@ export default function DayZeroFramework() {
       )}
 
       {accepted && !showAuthPage && (
-        <div style={{ maxWidth: 960, margin: "0 auto", padding: "1.5rem clamp(0.8rem, 4vw, 1.5rem)" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "1.5rem clamp(0.8rem, 4vw, 2rem)" }}>
           <div className="form-layout" style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
           {/* Left column — form */}
           <div style={{ flex: "1 1 400px", maxWidth: "100%" }}>
