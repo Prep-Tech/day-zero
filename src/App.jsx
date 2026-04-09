@@ -373,6 +373,24 @@ export default function DayZeroFramework() {
   };
   const totalQuestions = sections.reduce((acc, s) => acc + (s.questions?.length || 0), 0);
 
+  // Check if ALL questions in a section have at least one field filled
+  const isSectionComplete = (sectionIdx) => {
+    const s = sections[sectionIdx];
+    if (!s?.questions) return false;
+    return s.questions.every((q) =>
+      q.fields.every((_, fi) => answers[getKey(q.id, fi)]?.length > 0)
+    );
+  };
+
+  // Check if a section has ANY content at all
+  const isSectionStarted = (sectionIdx) => {
+    const s = sections[sectionIdx];
+    if (!s?.questions) return false;
+    return s.questions.some((q) =>
+      q.fields.some((_, fi) => answers[getKey(q.id, fi)]?.length > 0)
+    );
+  };
+
   const handleNext = () => {
     if (activeSectionIdx < sections.length - 1) {
       setActiveSectionIdx((i) => i + 1);
@@ -596,6 +614,7 @@ export default function DayZeroFramework() {
           .section-desc { font-size: 0.95rem !important; }
           .question-prompt { font-size: 0.9rem !important; }
           .smart-badge { font-size: 0.6rem !important; padding: 2px 5px !important; }
+          .smart-legend { flex-direction: column; }
         }
       `}</style>
 
@@ -767,29 +786,34 @@ export default function DayZeroFramework() {
           <div>
               {/* Progress stepper */}
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center", marginBottom: "1.5rem", overflowX: "auto", paddingBottom: "0.25rem" }}>
-                {sections.map((s, i) => (
+                {sections.map((s, i) => {
+                  const isPast = !showExport && activeSectionIdx > i;
+                  const isCurrent = !showExport && activeSectionIdx === i;
+                  const complete = isSectionComplete(i);
+                  return (
                   <div key={s.id} style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.3rem" }}>
                       <button
                         onClick={() => { setActiveSectionIdx(i); setActiveQ(null); setShowExport(false); }}
                         style={{
-                          background: showExport ? "#eee" : activeSectionIdx === i ? s.color : activeSectionIdx > i ? "#3AAFB9" : "#fff",
-                          color: showExport ? "#aaa" : activeSectionIdx === i ? "#fff" : activeSectionIdx > i ? s.color : "#bbb",
-                          border: `2px solid ${!showExport && activeSectionIdx >= i ? s.color : "#ddd"}`,
+                          background: showExport ? "#eee" : isCurrent ? s.color : isPast ? s.color : "#fff",
+                          color: showExport ? "#aaa" : isCurrent ? "#fff" : isPast ? "#fff" : "#bbb",
+                          border: `2px solid ${!showExport && (isCurrent || isPast) ? s.color : "#ddd"}`,
                           borderRadius: "50%", width: 36, height: 36,
-                          fontSize: "1rem", cursor: "pointer", flexShrink: 0,
+                          fontSize: isPast ? "0.85rem" : "1rem", cursor: "pointer", flexShrink: 0,
                           display: "flex", alignItems: "center", justifyContent: "center",
                         }}
                       >
-                        {!showExport && activeSectionIdx > i ? "✓" : s.icon}
+                        {isPast ? (complete ? "✓" : "●") : s.icon}
                       </button>
-                      <div className="stepper-label" style={{ fontSize: "0.94rem", letterSpacing: "0.1em", color: !showExport && activeSectionIdx === i ? s.color : "#aaa", whiteSpace: "nowrap", textAlign: "center" }}>
+                      <div className="stepper-label" style={{ fontSize: "0.94rem", letterSpacing: "0.1em", color: isCurrent || isPast ? s.color : "#aaa", whiteSpace: "nowrap", textAlign: "center" }}>
                         {s.label.toUpperCase()}
                       </div>
                     </div>
-                    <div style={{ width: "clamp(16px, 4vw, 36px)", height: 1, background: activeSectionIdx > i && !showExport ? "#3AAFB9" : "#ddd", margin: "0 2px", marginBottom: "1.2rem", flexShrink: 0 }} />
+                    <div style={{ width: "clamp(16px, 4vw, 36px)", height: 1, background: isPast && !showExport ? s.color : "#ddd", margin: "0 2px", marginBottom: "1.2rem", flexShrink: 0 }} />
                   </div>
-                ))}
+                  );
+                })}
                 {/* PDF step */}
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.3rem", flexShrink: 0 }}>
                   <button
@@ -921,7 +945,7 @@ export default function DayZeroFramework() {
                   {/* SMART legend */}
                   <div style={{ marginTop: "1.2rem", padding: "1.1rem", background: "#fff", border: "1px solid #e0dcd7" }}>
                     <div style={{ fontSize: "0.94rem", letterSpacing: "0.2em", color: "#aaa", marginBottom: "0.72rem" }}>SMART GOAL FRAMEWORK</div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div className="smart-legend" style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.2rem" }}>
                       {Object.entries(smartColors).map(([label, color]) => (
                         <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
                           <div style={{ width: 9, height: 9, background: color, borderRadius: "50%", flexShrink: 0 }} />
