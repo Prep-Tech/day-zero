@@ -643,7 +643,8 @@ export default function DayZeroFramework() {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100vw; }
+        html, body { margin: 0; padding: 0; max-width: 100vw; }
+        html { overflow-x: clip; }
         input, textarea, button { -webkit-appearance: none; border-radius: 0; }
         @media (max-width: 480px) {
           .stepper-label { display: none; }
