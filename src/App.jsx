@@ -615,6 +615,9 @@ export default function DayZeroFramework() {
           .question-prompt { font-size: 0.9rem !important; }
           .smart-badge { font-size: 0.6rem !important; padding: 2px 5px !important; }
           .smart-legend { flex-direction: column; }
+          .premise-grid { flex-direction: column; }
+          .form-layout { flex-direction: column; }
+          .quote-column { display: none !important; }
         }
       `}</style>
 
@@ -688,44 +691,50 @@ export default function DayZeroFramework() {
         </div>
       )}
 
-      {/* Intro / Premise */}
+      {/* Intro / Premise — 2 column on desktop */}
       {!accepted && !showAuthPage && (
-        <div style={{ maxWidth: 620, margin: "2rem auto", padding: "0 clamp(0.8rem, 4vw, 1rem)" }}>
-          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-            <p style={{ color: "#444", fontStyle: "italic", fontSize: "clamp(0.9rem, 3vw, 1rem)", margin: 0 }}>
-              All past issues are forgiven and forgotten. Today we begin again.
-            </p>
-          </div>
-          <div style={{ background: "#fff", padding: "clamp(1.2rem, 5vw, 2.5rem)", border: "1px solid #e0dcd7" }}>
-            <div style={{ fontSize: "0.84rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "1.1rem" }}>BEFORE YOU BEGIN</div>
-            <h2 style={{ fontWeight: 400, fontSize: "clamp(1.35rem, 5vw, 1.65rem)", marginTop: 0 }}>The Day Zero Premise</h2>
-            <p style={{ color: "#444", lineHeight: 1.2, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>
-              This exercise asks both of you to set aside everything that has happened and answer honestly about the future you <em>want</em> — not the past you're carrying.
-            </p>
-            <p style={{ color: "#444", lineHeight: 1.2, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>There are no right answers. There is no winner. The only goal is clarity — for yourself, and then for each other.</p>
-            <ul style={{ color: "#444", lineHeight: 1.2, paddingLeft: "1.2rem", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
-              <li>Each partner completes all three sections <strong>independently</strong></li>
-              <li>Use the fill-in sentences to guide, not limit, what you want to say</li>
-              <li>SMART goals keep intentions <strong>concrete and actionable</strong></li>
-              <li>Save your answers as a PDF when you're ready to share</li>
-            </ul>
-            <div style={{ background: "#F7F4EF", borderLeft: "3px solid #3AAFB9", padding: "1rem 1.2rem", margin: "1.5rem 0", fontStyle: "italic", color: "#444", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
-              "If today was Day Zero — all past issues forgiven and forgotten — how do you see your life going forward?"
+        <div style={{ maxWidth: 960, margin: "2rem auto", padding: "0 clamp(0.8rem, 4vw, 1.5rem)" }}>
+          <div style={{ background: "#fff", border: "1px solid #e0dcd7", padding: "clamp(1.2rem, 5vw, 2.5rem)" }}>
+            <div className="premise-grid" style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
+              {/* Left column — heading + explanation */}
+              <div style={{ flex: "1 1 300px", minWidth: 0 }}>
+                <div style={{ fontSize: "0.84rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "1.1rem" }}>BEFORE YOU BEGIN</div>
+                <h2 style={{ fontWeight: 400, fontSize: "clamp(1.35rem, 5vw, 1.65rem)", marginTop: 0 }}>The Day Zero Premise</h2>
+                <p style={{ color: "#444", lineHeight: 1.2, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>
+                  This exercise asks both of you to set aside everything that has happened and answer honestly about the future you <em>want</em> — not the past you're carrying.
+                </p>
+                <p style={{ color: "#444", lineHeight: 1.2, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>There are no right answers. There is no winner. The only goal is clarity — for yourself, and then for each other.</p>
+                <ul style={{ color: "#444", lineHeight: 1.2, paddingLeft: "1.2rem", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
+                  <li>Each partner completes all three sections <strong>independently</strong></li>
+                  <li>Use the fill-in sentences to guide, not limit, what you want to say</li>
+                  <li>SMART goals keep intentions <strong>concrete and actionable</strong></li>
+                  <li>Save your answers as a PDF when you're ready to share</li>
+                </ul>
+              </div>
+              {/* Right column — quote + button */}
+              <div style={{ flex: "1 1 260px", minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <div style={{ background: "#F7F4EF", borderLeft: "3px solid #3AAFB9", padding: "1rem 1.2rem", fontStyle: "italic", color: "#444", fontSize: "clamp(1rem, 3.5vw, 1.12rem)", marginBottom: "1.5rem" }}>
+                  "If today was Day Zero — all past issues forgiven and forgotten — how do you see your life going forward?"
+                </div>
+                <button onClick={() => setAccepted(true)} style={{ background: "#3AAFB9", color: "#fff", border: "none", padding: "1rem 2rem", fontSize: "clamp(0.92rem, 3vw, 1.02rem)", letterSpacing: "0.2em", cursor: "pointer", width: "100%" }}>
+                  I ACCEPT THE PREMISE — BEGIN
+                </button>
+                {!user && (
+                  <p style={{ color: "#3AAFB9", fontSize: "0.85rem", textAlign: "center", marginTop: "1.2rem", marginBottom: 0 }}>
+                    Want to save your progress and come back later? <button onClick={() => setShowAuthPage(true)} style={{ background: "none", border: "none", color: "#3AAFB9", fontWeight: 600, cursor: "pointer", fontFamily: "'Montserrat', sans-serif", fontSize: "0.85rem", textDecoration: "underline", padding: 0 }}>Sign up for free</button>
+                  </p>
+                )}
+              </div>
             </div>
-            <button onClick={() => setAccepted(true)} style={{ background: "#3AAFB9", color: "#fff", border: "none", padding: "1rem 2rem", fontSize: "clamp(0.92rem, 3vw, 1.02rem)", letterSpacing: "0.2em", cursor: "pointer", width: "100%" }}>
-              I ACCEPT THE PREMISE — BEGIN
-            </button>
-            {!user && (
-              <p style={{ color: "#3AAFB9", fontSize: "0.85rem", textAlign: "center", marginTop: "1.2rem", marginBottom: 0 }}>
-                Want to save your progress and come back later? <button onClick={() => setShowAuthPage(true)} style={{ background: "none", border: "none", color: "#3AAFB9", fontWeight: 600, cursor: "pointer", fontFamily: "'Montserrat', sans-serif", fontSize: "0.85rem", textDecoration: "underline", padding: 0 }}>Sign up for free</button>
-              </p>
-            )}
           </div>
         </div>
       )}
 
       {accepted && !showAuthPage && (
-        <div style={{ maxWidth: 700, margin: "0 auto", padding: "1.5rem clamp(0.8rem, 4vw, 1rem)" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto", padding: "1.5rem clamp(0.8rem, 4vw, 1.5rem)" }}>
+          <div className="form-layout" style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
+          {/* Left column — form */}
+          <div style={{ flex: "1 1 400px", maxWidth: "100%" }}>
 
           {/* Save button bar — only for logged-in users */}
           {user && (
@@ -982,6 +991,10 @@ export default function DayZeroFramework() {
               )}
             </div>
           )}
+          </div>
+          {/* Right column — placeholder for quotes (next step) */}
+          <div className="quote-column" style={{ flex: "1 1 260px", minWidth: 0 }} />
+          </div>
         </div>
       )}
     </div>
