@@ -776,12 +776,10 @@ export default function DayZeroFramework() {
           )}
 
           {(user || nameSubmitted) && (
-          <div className="form-layout" style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
-          {/* Left column — form */}
-          <div style={{ flex: "1 1 400px", maxWidth: "100%" }}>
+          <>
 
           {/* Save button bar — only for logged-in users */}
-          {user && (
+          {user && !showExport && (
             <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "0.8rem", marginBottom: "1rem" }}>
               {saveMsg && <span style={{ fontSize: "0.85rem", color: saveMsg.includes("Failed") ? "#e53e3e" : "#3AAFB9" }}>{saveMsg}</span>}
               <button
@@ -853,7 +851,7 @@ export default function DayZeroFramework() {
 
               {/* Export panel */}
               {showExport && (
-                <div style={{ background: "#fff", border: "1px solid #3AAFB9", padding: "clamp(1.35rem, 5vw, 2.12rem)", marginBottom: "2rem" }}>
+                <div style={{ maxWidth: 620, margin: "0 auto 2rem", background: "#fff", border: "1px solid #3AAFB9", padding: "clamp(1.35rem, 5vw, 2.12rem)" }}>
                   <div style={{ fontSize: "0.84rem", letterSpacing: "0.25em", color: "#3AAFB9", marginBottom: "0.5rem" }}>SAVE YOUR ANSWERS</div>
                   <h2 style={{ fontWeight: 400, fontSize: "clamp(1.1rem, 5vw, 1.4rem)", marginBottom: "0.8rem" }}>
                     Ready to share, {userName}?
@@ -861,8 +859,6 @@ export default function DayZeroFramework() {
                   <p style={{ color: "#444", fontSize: "clamp(1rem, 3.5vw, 1.12rem)", lineHeight: 1.2, marginBottom: "1.5rem" }}>
                     Your answers will be saved as a PDF. Share it with your partner — or a counsellor — when you feel ready.
                   </p>
-
-                  {/* Progress + button stacked on mobile */}
                   <div style={{ background: "#F7F4EF", border: "1px solid #e0dcd7", padding: "1.2rem", marginBottom: "0.8rem" }}>
                     <div style={{ fontSize: "clamp(0.94rem, 3.5vw, 1.02rem)", color: "#444", marginBottom: "0.8rem" }}>
                       <strong>{userName}</strong> — {count} of {totalQuestions} questions answered
@@ -884,8 +880,12 @@ export default function DayZeroFramework() {
                 </div>
               )}
 
-              {/* Questions panel */}
-              {!showExport && activeSection && (
+          </div>
+
+          {/* Questions panel — in flex layout */}
+          {!showExport && activeSection && (
+            <div className="form-layout" style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
+            <div style={{ flex: "1 1 400px", maxWidth: "100%" }}>
                 <>
                   {/* Section description */}
                   <div style={{
@@ -993,12 +993,13 @@ export default function DayZeroFramework() {
                     This framework is a starting point — not a contract. Be honest. Be kind.
                   </div>
                 </>
-              )}
             </div>
-          </div>
-          {/* Right column — placeholder for quotes (next step) */}
-          <div className="quote-column" style={{ flex: "1 1 260px", minWidth: 0 }} />
-          </div>
+            {/* Right column — placeholder for quotes (next step) */}
+            <div className="quote-column" style={{ flex: "1 1 260px", minWidth: 0 }} />
+            </div>
+          )}
+
+          </>
           )}
         </div>
       )}
