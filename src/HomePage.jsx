@@ -161,17 +161,23 @@ export default function HomePage({ onBegin, onSignUp, user }) {
         textAlign: "center", color: "#fff",
       }}>
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
-          <h2 style={{ fontWeight: 700, fontSize: "clamp(2rem, 6vw, 3.2rem)", margin: "0 0 1.2rem", lineHeight: 1.15 }}>
-            What if you could start over — today?
+          <h1 style={{ margin: "0 0 0.3rem", fontSize: "clamp(2.5rem, 7vw, 3.5rem)", fontWeight: 700 }}>Day Zero</h1>
+          <div style={{ fontSize: "clamp(0.7rem, 2vw, 0.85rem)", letterSpacing: "0.3em", opacity: 0.85, marginBottom: "1.5rem" }}>A FRAMEWORK FOR RENEWAL</div>
+          <h2 style={{ fontWeight: 700, fontSize: "30px", margin: "0 0 1.2rem", lineHeight: 1.15 }}>
+            What if you could start over today?
           </h2>
-          <p style={{ fontSize: "clamp(1.05rem, 3vw, 1.25rem)", lineHeight: 1.5, opacity: 0.92, margin: "0 0 0.5rem" }}>
+          <p style={{ fontSize: "clamp(1.05rem, 3vw, 1.25rem)", lineHeight: 1.5, opacity: 0.92, margin: "0 0 2rem" }}>
             Day Zero is a guided framework that helps couples step out of the cycle of tension and into honest, independent reflection — on your own time, in your own words.
-          </p>
-          <p style={{ fontSize: "clamp(0.95rem, 2.5vw, 1.1rem)", lineHeight: 1.5, opacity: 0.78, margin: "0 0 2rem" }}>
-            No therapist required. No awkward silences. Just clarity.
           </p>
           {ctaBtn(handleCTA, "START YOUR DAY ZERO")}
         </div>
+      </div>
+
+      {/* ═══ TRUST STRIP ═══ */}
+      <div style={{ background: "#2d8f97", padding: "0.9rem 1rem", textAlign: "center" }}>
+        <span style={{ color: "#fff", fontSize: "clamp(0.8rem, 2.5vw, 0.95rem)", letterSpacing: "0.1em", opacity: 0.9 }}>
+          No Therapist Required <span style={{ opacity: 0.5, margin: "0 0.8rem" }}>|</span> No Awkward Silences <span style={{ opacity: 0.5, margin: "0 0.8rem" }}>|</span> Just Clarity
+        </span>
       </div>
 
       {/* ═══ THE PROBLEM ═══ */}
@@ -179,7 +185,7 @@ export default function HomePage({ onBegin, onSignUp, user }) {
         <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center" }}>
           <div style={{ fontSize: "18px", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>THE PROBLEM</div>
           <h3 style={{ fontSize: "24px", fontWeight: 600, margin: "0 0 1.2rem", color: "#1a1a1a" }}>
-            Important conversations deserve more than a heated moment
+            Important Conversations Deserve More Than A Heated Moment
           </h3>
           <p style={{ color: "#555", fontSize: "clamp(1rem, 3vw, 1.12rem)", lineHeight: 1.6, margin: "0 0 1rem" }}>
             When emotions are high, words come out wrong. You react instead of reflect. You defend instead of listen. And the things that matter most — your values, your vision for your family, your hopes — get lost in the noise.
@@ -196,7 +202,7 @@ export default function HomePage({ onBegin, onSignUp, user }) {
           <div style={{ textAlign: "center", marginBottom: "clamp(2rem, 5vw, 3rem)" }}>
             <div style={{ fontSize: "18px", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>HOW IT WORKS</div>
             <h3 style={{ fontSize: "24px", fontWeight: 600, margin: 0, color: "#1a1a1a" }}>
-              Three sections. Fifteen questions. One fresh start.
+              Three Sections. Fifteen Questions. One Fresh Start.
             </h3>
           </div>
           <div className="steps-grid" style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap", justifyContent: "center" }}>
@@ -225,7 +231,7 @@ export default function HomePage({ onBegin, onSignUp, user }) {
           <div style={{ textAlign: "center", marginBottom: "clamp(2rem, 5vw, 3rem)" }}>
             <div style={{ fontSize: "18px", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>WHY IT WORKS</div>
             <h3 style={{ fontSize: "24px", fontWeight: 600, margin: 0, color: "#1a1a1a" }}>
-              Decouple the conversation from the conflict
+              Decouple The Conversation From The Conflict
             </h3>
           </div>
           <div className="benefits-grid" style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
@@ -254,7 +260,7 @@ export default function HomePage({ onBegin, onSignUp, user }) {
           <div style={{ flex: "1 1 340px", minWidth: 0 }}>
             <div style={{ fontSize: "18px", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>INSIDE DAY ZERO</div>
             <h3 style={{ fontSize: "24px", fontWeight: 600, margin: "0 0 1rem", color: "#1a1a1a" }}>
-              Guided sentences, not blank pages
+              Guided Sentences, Not Blank Pages
             </h3>
             <p style={{ color: "#555", fontSize: "clamp(0.95rem, 3vw, 1.08rem)", lineHeight: 1.6, margin: "0 0 1rem" }}>
               Each question uses the SMART goal framework with fill-in-the-blank sentences. You're not staring at an empty journal — you're completing thoughts that are already structured for clarity.
@@ -275,7 +281,7 @@ export default function HomePage({ onBegin, onSignUp, user }) {
         <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
           <div style={{ fontSize: "18px", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>THE PREMISE</div>
           <h3 style={{ fontSize: "24px", fontWeight: 600, margin: "0 0 1.2rem", color: "#1a1a1a" }}>
-            All past issues are forgiven and forgotten
+            All Past Issues Are Forgiven And Forgotten
           </h3>
           <div style={{
             borderLeft: "3px solid #3AAFB9", padding: "1rem 1.5rem",

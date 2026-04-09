@@ -264,6 +264,14 @@ export default function DayZeroFramework() {
   const [saveMsg, setSaveMsg] = useState("");
   const [showAuthPage, setShowAuthPage] = useState(false);
   const [resetMode, setResetMode] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Show header bar after scrolling past the hero
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [resetMsg, setResetMsg] = useState("");
@@ -661,8 +669,14 @@ export default function DayZeroFramework() {
         }
       `}</style>
 
-      {/* Header */}
-      <div style={{ background: "#3AAFB9", color: "#fff", padding: "0.6rem clamp(0.8rem, 3vw, 1.2rem)" }}>
+      {/* Header — hidden on homepage until scrolled */}
+      <div style={{
+        background: "#3AAFB9", color: "#fff", padding: "0.6rem clamp(0.8rem, 3vw, 1.2rem)",
+        position: (!accepted && !showAuthPage) ? "fixed" : "sticky",
+        top: 0, left: 0, right: 0, zIndex: 100,
+        transform: (!accepted && !showAuthPage && !scrolled) ? "translateY(-100%)" : "translateY(0)",
+        transition: "transform 0.3s ease",
+      }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <h1 onClick={() => { setAccepted(false); setShowAuthPage(false); setShowExport(false); window.scrollTo({ top: 0 }); }} style={{ margin: 0, fontSize: "clamp(1.3rem, 4vw, 1.7rem)", fontWeight: "700", color: "#fff", lineHeight: 1.2, cursor: "pointer" }}>Day Zero</h1>
