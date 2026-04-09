@@ -34,8 +34,12 @@ export default function Auth({ onAuth }) {
       return;
     }
 
-    // Auto sign-in after signup (no email confirmation required)
+    // Send branded welcome email via Edge Function (fire and forget)
     if (data.user) {
+      supabase.functions.invoke("send-welcome-email", {
+        body: { email, name: name.trim() },
+      }).catch(() => {}); // don't block signup if email fails
+
       onAuth(data.user, data.session);
     }
     setLoading(false);
