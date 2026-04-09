@@ -246,6 +246,7 @@ export default function DayZeroFramework() {
   const [authLoading, setAuthLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
+  const [showAuthPage, setShowAuthPage] = useState(false);
   const [resetMode, setResetMode] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -298,6 +299,7 @@ export default function DayZeroFramework() {
     setSession(s);
     setUserName(u.user_metadata?.display_name || "");
     setNameSubmitted(true);
+    setShowAuthPage(false);
   };
 
   const handleLogout = async () => {
@@ -597,32 +599,83 @@ export default function DayZeroFramework() {
         }
       `}</style>
 
-      {/* Header */}
-      <div style={{ background: "#3AAFB9", color: "#fff", padding: "1.5rem 1rem", textAlign: "center", position: "relative" }}>
-        {user && (
-          <button
-            onClick={handleLogout}
-            style={{
-              position: "absolute", top: "1rem", right: "1rem",
-              background: "rgba(255,255,255,0.2)", color: "#fff", border: "none",
-              padding: "0.4rem 0.8rem", fontSize: "0.75rem", letterSpacing: "0.1em",
-              cursor: "pointer", fontFamily: "'Montserrat', sans-serif", borderRadius: 2,
-            }}
-          >
-            LOG OUT
-          </button>
-        )}
-        <h1 style={{ margin: 0, fontSize: "clamp(2.72rem, 7vw, 3.37rem)", fontWeight: "700", color: "#fff" }}>Day Zero</h1>
-        <div style={{ fontSize: "0.94rem", letterSpacing: "0.3em", color: "#fff", marginTop: "0.4rem", opacity: 0.85 }}>A FRAMEWORK FOR RENEWAL</div>
-        <p style={{ margin: "0.4rem 0 0", color: "#fff", opacity: 0.8, fontSize: "clamp(0.82rem, 3vw, 0.95rem)", fontStyle: "italic" }}>
-          All past issues are forgiven and forgotten. Today we begin again.
-        </p>
+      {/* Header — thin bar with left brand + right auth buttons */}
+      <div style={{ background: "#3AAFB9", color: "#fff", padding: "0.75rem 1.2rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: "0.6rem" }}>
+          <h1 style={{ margin: 0, fontSize: "clamp(1.4rem, 4vw, 1.8rem)", fontWeight: "700", color: "#fff" }}>Day Zero</h1>
+          <span style={{ fontSize: "clamp(0.6rem, 2vw, 0.75rem)", letterSpacing: "0.2em", color: "#fff", opacity: 0.85 }}>A FRAMEWORK FOR RENEWAL</span>
+        </div>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          {user ? (
+            <button
+              onClick={handleLogout}
+              style={{
+                background: "rgba(255,255,255,0.2)", color: "#fff", border: "none",
+                padding: "0.4rem 0.9rem", fontSize: "0.75rem", letterSpacing: "0.1em",
+                cursor: "pointer", fontFamily: "'Montserrat', sans-serif", borderRadius: 2,
+              }}
+            >
+              LOG OUT
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => setShowAuthPage(true)}
+                style={{
+                  background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.5)",
+                  padding: "0.4rem 0.9rem", fontSize: "0.75rem", letterSpacing: "0.1em",
+                  cursor: "pointer", fontFamily: "'Montserrat', sans-serif", borderRadius: 2,
+                }}
+              >
+                LOG IN
+              </button>
+              <button
+                onClick={() => setShowAuthPage(true)}
+                style={{
+                  background: "#fff", color: "#3AAFB9", border: "none",
+                  padding: "0.4rem 0.9rem", fontSize: "0.75rem", letterSpacing: "0.1em",
+                  cursor: "pointer", fontFamily: "'Montserrat', sans-serif", borderRadius: 2, fontWeight: 600,
+                }}
+              >
+                SIGN UP
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
-      {/* Intro + Auth */}
-      {!accepted && (
+      {/* Auth page — separate full page */}
+      {showAuthPage && !user && (
         <div style={{ maxWidth: 620, margin: "2rem auto", padding: "0 clamp(0.8rem, 4vw, 1rem)" }}>
-          <div style={{ background: "#fff", padding: "clamp(1.2rem, 5vw, 2.5rem)", border: "1px solid #e0dcd7", marginBottom: "1.5rem" }}>
+          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+            <p style={{ color: "#444", fontStyle: "italic", fontSize: "clamp(0.9rem, 3vw, 1rem)" }}>
+              All past issues are forgiven and forgotten. Today we begin again.
+            </p>
+          </div>
+          <Auth onAuth={handleAuth} />
+          <div style={{ textAlign: "center", marginTop: "1.2rem" }}>
+            <button
+              onClick={() => setShowAuthPage(false)}
+              style={{
+                background: "none", border: "none", color: "#3AAFB9", fontSize: "0.9rem",
+                cursor: "pointer", fontFamily: "'Montserrat', sans-serif", textDecoration: "underline",
+              }}
+            >
+              Continue without an account
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Intro / Premise */}
+      {!accepted && !showAuthPage && (
+        <div style={{ maxWidth: 620, margin: "2rem auto", padding: "0 clamp(0.8rem, 4vw, 1rem)" }}>
+          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+            <p style={{ color: "#444", fontStyle: "italic", fontSize: "clamp(0.9rem, 3vw, 1rem)", margin: 0 }}>
+              All past issues are forgiven and forgotten. Today we begin again.
+            </p>
+          </div>
+          <div style={{ background: "#fff", padding: "clamp(1.2rem, 5vw, 2.5rem)", border: "1px solid #e0dcd7" }}>
             <div style={{ fontSize: "0.84rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "1.1rem" }}>BEFORE YOU BEGIN</div>
             <h2 style={{ fontWeight: 400, fontSize: "clamp(1.35rem, 5vw, 1.65rem)", marginTop: 0 }}>The Day Zero Premise</h2>
             <p style={{ color: "#444", lineHeight: 1.8, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>
@@ -638,41 +691,79 @@ export default function DayZeroFramework() {
             <div style={{ background: "#F7F4EF", borderLeft: "3px solid #3AAFB9", padding: "1rem 1.2rem", margin: "1.5rem 0", fontStyle: "italic", color: "#444", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
               "If today was Day Zero — all past issues forgiven and forgotten — how do you see your life going forward?"
             </div>
-            {user ? (
-              <button onClick={() => setAccepted(true)} style={{ background: "#3AAFB9", color: "#fff", border: "none", padding: "1rem 2rem", fontSize: "clamp(0.92rem, 3vw, 1.02rem)", letterSpacing: "0.2em", cursor: "pointer", width: "100%" }}>
-                I ACCEPT THE PREMISE — BEGIN
-              </button>
-            ) : (
-              <p style={{ color: "#aaa", fontSize: "0.95rem", textAlign: "center", marginBottom: 0 }}>Sign up or log in below to begin and save your progress.</p>
+            <button onClick={() => setAccepted(true)} style={{ background: "#3AAFB9", color: "#fff", border: "none", padding: "1rem 2rem", fontSize: "clamp(0.92rem, 3vw, 1.02rem)", letterSpacing: "0.2em", cursor: "pointer", width: "100%" }}>
+              I ACCEPT THE PREMISE — BEGIN
+            </button>
+            {!user && (
+              <p style={{ color: "#3AAFB9", fontSize: "0.85rem", textAlign: "center", marginTop: "1.2rem", marginBottom: 0 }}>
+                Want to save your progress and come back later? <button onClick={() => setShowAuthPage(true)} style={{ background: "none", border: "none", color: "#3AAFB9", fontWeight: 600, cursor: "pointer", fontFamily: "'Montserrat', sans-serif", fontSize: "0.85rem", textDecoration: "underline", padding: 0 }}>Sign up for free</button>
+              </p>
             )}
           </div>
-
-          {/* Auth form — only show if not logged in */}
-          {!user && <Auth onAuth={handleAuth} />}
         </div>
       )}
 
-      {accepted && user && (
+      {accepted && !showAuthPage && (
         <div style={{ maxWidth: 700, margin: "0 auto", padding: "1.5rem clamp(0.8rem, 4vw, 1rem)" }}>
 
-          {/* Save button bar */}
-          <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "0.8rem", marginBottom: "1rem" }}>
-            {saveMsg && <span style={{ fontSize: "0.85rem", color: saveMsg.includes("Failed") ? "#e53e3e" : "#3AAFB9" }}>{saveMsg}</span>}
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              style={{
-                background: "#fff", color: "#3AAFB9", border: "1px solid #3AAFB9",
-                padding: "0.5rem 1.2rem", fontSize: "0.85rem", letterSpacing: "0.1em",
-                cursor: saving ? "default" : "pointer", fontFamily: "'Montserrat', sans-serif",
-                opacity: saving ? 0.6 : 1, borderRadius: 2,
-              }}
-            >
-              {saving ? "SAVING..." : "SAVE PROGRESS"}
-            </button>
-          </div>
+          {/* Save button bar — only for logged-in users */}
+          {user && (
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "0.8rem", marginBottom: "1rem" }}>
+              {saveMsg && <span style={{ fontSize: "0.85rem", color: saveMsg.includes("Failed") ? "#e53e3e" : "#3AAFB9" }}>{saveMsg}</span>}
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                style={{
+                  background: "#fff", color: "#3AAFB9", border: "1px solid #3AAFB9",
+                  padding: "0.5rem 1.2rem", fontSize: "0.85rem", letterSpacing: "0.1em",
+                  cursor: saving ? "default" : "pointer", fontFamily: "'Montserrat', sans-serif",
+                  opacity: saving ? 0.6 : 1, borderRadius: 2,
+                }}
+              >
+                {saving ? "SAVING..." : "SAVE PROGRESS"}
+              </button>
+            </div>
           )}
 
+          {/* Guest name prompt — only if not logged in and name not set */}
+          {!user && !userName.trim() && (
+            <div style={{ maxWidth: 480, margin: "0 auto 1.5rem", background: "#fff", border: "1px solid #e0dcd7", padding: "clamp(1.2rem, 5vw, 2rem)" }}>
+              <h2 style={{ fontWeight: 400, fontSize: "clamp(1.2rem, 4vw, 1.4rem)", marginTop: 0, marginBottom: "0.5rem" }}>What is your name?</h2>
+              <p style={{ color: "#777", fontSize: "clamp(0.9rem, 3vw, 1rem)", lineHeight: 1.7, marginBottom: "1rem" }}>
+                Your name will appear on your exported PDF.
+              </p>
+              <input
+                autoFocus
+                placeholder="Your first name"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter" && userName.trim()) setNameSubmitted(true); }}
+                style={{
+                  width: "100%", border: "none", borderBottom: "2px solid #3AAFB9",
+                  background: "transparent", padding: "0.6rem 0.3rem",
+                  fontSize: "clamp(1.1rem, 4vw, 1.3rem)",
+                  fontFamily: "'Montserrat', sans-serif", color: "#1a1a1a", outline: "none",
+                  marginBottom: "1.2rem",
+                }}
+              />
+              <button
+                onClick={() => { if (userName.trim()) setNameSubmitted(true); }}
+                disabled={!userName.trim()}
+                style={{
+                  background: userName.trim() ? "#3AAFB9" : "#ddd",
+                  color: userName.trim() ? "#fff" : "#aaa",
+                  border: "none", padding: "0.8rem 2rem",
+                  fontSize: "clamp(0.85rem, 3vw, 0.95rem)",
+                  letterSpacing: "0.2em", cursor: userName.trim() ? "pointer" : "default", width: "100%",
+                }}
+              >
+                CONTINUE
+              </button>
+            </div>
+          )}
+
+          {/* Main questionnaire — show once we have a name */}
+          {(user || userName.trim()) && (
           <div>
               {/* Progress stepper */}
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center", marginBottom: "1.5rem", overflowX: "auto", paddingBottom: "0.25rem" }}>
@@ -864,6 +955,7 @@ export default function DayZeroFramework() {
                 </>
               )}
             </div>
+          )}
         </div>
       )}
     </div>
