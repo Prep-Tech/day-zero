@@ -14,6 +14,7 @@ const sections = [
       {
         id: "vp1", smart: "Specific",
         prompt: "The kind of partner I want to be",
+        quote: { text: "The beginning of love is the will to let those we love be perfectly themselves, the resolution not to twist them to fit our own image.", author: "Thomas Merton" },
         sentence: "Starting today, I want to show up as a partner who is ____, ____, and ____.",
         hint: "e.g. present, patient, affectionate",
         fields: ["Quality 1", "Quality 2", "Quality 3"],
@@ -21,6 +22,7 @@ const sections = [
       {
         id: "vp2", smart: "Measurable",
         prompt: "How I will show love in concrete ways",
+        quote: { text: "Love is a verb. Love — the feeling — is the fruit of love the verb. So love her. Sacrifice. Listen. Empathise. Appreciate. Affirm.", author: "Stephen Covey" },
         sentence: "I will demonstrate love by ____ at least ____ times per ____.",
         hint: "e.g. leaving a note, once, week",
         fields: ["Action", "Frequency", "Time period"],
@@ -28,6 +30,7 @@ const sections = [
       {
         id: "vp3", smart: "Achievable",
         prompt: "One realistic change I can commit to",
+        quote: { text: "When we are no longer able to change a situation, we are challenged to change ourselves.", author: "Viktor Frankl" },
         sentence: "One thing I know I can genuinely change is ____. I've held back because ____, but I'm ready to try because ____.",
         hint: "Be honest and specific",
         fields: ["The change", "What held me back", "Why I'm ready now"],
@@ -35,6 +38,7 @@ const sections = [
       {
         id: "vp4", smart: "Relevant",
         prompt: "What matters most to me in this relationship",
+        quote: { text: "The greatest thing you'll ever learn is just to love and be loved in return.", author: "Eden Ahbez" },
         sentence: "What I value most about us is ____. I want our relationship to be remembered as ____.",
         hint: "Think about your core 'why'",
         fields: ["What I value most", "How I want it remembered"],
@@ -42,6 +46,7 @@ const sections = [
       {
         id: "vp5", smart: "Time-bound",
         prompt: "A 90-day vision for us",
+        quote: { text: "A year from now you will wish you had started today.", author: "Karen Lamb" },
         sentence: "In 90 days, I want us to be able to say that we ____. My first step this week is ____.",
         hint: "Make it achievable within 90 days",
         fields: ["90-day milestone", "First step this week"],
@@ -58,6 +63,7 @@ const sections = [
       {
         id: "pp1", smart: "Specific",
         prompt: "The parent I want to be",
+        quote: { text: "Children have never been very good at listening to their elders, but they have never failed to imitate them.", author: "James Baldwin" },
         sentence: "I want my child(ren) to describe me as ____, ____, and ____. If I'm honest, I think they would say right now I am ____.",
         hint: "Picture how your child experiences you — not how you intend to be",
         fields: ["Ideal quality 1", "Ideal quality 2", "Ideal quality 3", "Honest current reality"],
@@ -65,6 +71,7 @@ const sections = [
       {
         id: "pp2", smart: "Measurable",
         prompt: "How I will show up as a parent in concrete ways",
+        quote: { text: "The most important thing a father can do for his children is to love their mother.", author: "Theodore Hesburgh" },
         sentence: "I will be more present as a parent by ____ at least ____ times per ____. I will know it's working when my child ____.",
         hint: "Think about specific moments — bedtime, school pick-up, weekends",
         fields: ["The action", "How often", "Time period", "How my child will show me it's working"],
@@ -72,6 +79,7 @@ const sections = [
       {
         id: "pp3", smart: "Achievable",
         prompt: "What I will personally stop doing in front of my children",
+        quote: { text: "Children are great imitators. So give them something great to imitate.", author: "Anonymous" },
         sentence: "I commit to no longer ____ in front of my child(ren). When I feel that urge rising, I will instead ____. I know this is possible because ____.",
         hint: "Own only your behaviour — not your partner's",
         fields: ["What I will stop", "What I'll do instead", "Why I believe I can do this"],
@@ -79,6 +87,7 @@ const sections = [
       {
         id: "pp4", smart: "Relevant",
         prompt: "The emotional legacy I want to leave my children",
+        quote: { text: "Your children will become what you are; so be what you want them to be.", author: "David Bly" },
         sentence: "I want my child(ren) to feel ____ in our home. The thing I never want them to carry into adulthood because of how I showed up is ____. What I do want them to carry is ____.",
         hint: "Think about what your own childhood gave you — and what it didn't",
         fields: ["How I want them to feel", "What I don't want to pass on", "What I do want to pass on"],
@@ -86,6 +95,7 @@ const sections = [
       {
         id: "pp5", smart: "Time-bound",
         prompt: "One parenting ritual I will start this month",
+        quote: { text: "The days are long, but the years are short.", author: "Gretchen Rubin" },
         sentence: "By the end of this month, I will personally establish ____ as a ritual with my child(ren). It will happen every ____ and I will protect that time by ____.",
         hint: "This is yours to own — not contingent on your partner",
         fields: ["My ritual", "How often", "How I will protect it"],
@@ -103,6 +113,7 @@ const sections = [
       {
         id: "sv1", smart: "Specific",
         prompt: "What I think our family needs most right now",
+        quote: { text: "Family is not an important thing. It's everything.", author: "Michael J. Fox" },
         sentence: "I think the most important thing for our family right now is ____. I feel this matters because ____.",
         hint: "Say what you genuinely believe — your partner will share theirs too",
         fields: ["What I think matters most", "Why I feel it matters"],
@@ -110,6 +121,7 @@ const sections = [
       {
         id: "sv2", smart: "Measurable",
         prompt: "How I'll know things are getting better",
+        quote: { text: "Trust is built in very small moments.", author: "Brené Brown" },
         sentence: "I think I'll feel we're improving when I start to notice ____. I'd feel comfortable checking in on this every ____.",
         hint: "Think about what a better dynamic would actually look and feel like to you",
         fields: ["The sign I'd notice", "Check-in frequency I'm comfortable with"],
@@ -117,6 +129,7 @@ const sections = [
       {
         id: "sv3", smart: "Achievable",
         prompt: "One thing I believe we can realistically do together",
+        quote: { text: "Alone we can do so little; together we can do so much.", author: "Helen Keller" },
         sentence: "I think one thing we could actually achieve together is ____. I feel we'd need ____ to make it work.",
         hint: "Keep it small and winnable — momentum matters more than ambition right now",
         fields: ["What I think we can do", "What I feel we'd need"],
@@ -124,6 +137,7 @@ const sections = [
       {
         id: "sv4", smart: "Relevant",
         prompt: "Why I think this relationship is still worth fighting for",
+        quote: { text: "The couples that are meant to be are the ones who go through everything that is designed to tear them apart, and come out even stronger.", author: "Unknown" },
         sentence: "I think what still connects us is ____. I feel our children deserve to see us ____.",
         hint: "This is your 'why' — be honest with yourself first",
         fields: ["What I think still connects us", "What I feel our children deserve to see"],
@@ -131,6 +145,7 @@ const sections = [
       {
         id: "sv5", smart: "Time-bound",
         prompt: "My commitment for the next 30 days",
+        quote: { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
         sentence: "I commit to ____ for the next 30 days. If I slip, I will ____ rather than give up. I'd like us to revisit this on ____.",
         hint: "Speak only for yourself — your partner will make their own commitment",
         fields: ["My personal commitment", "My recovery plan", "A date to revisit"],
@@ -608,6 +623,26 @@ export default function DayZeroFramework() {
       {/* Mobile-first global styles */}
       <style>{`
         * { box-sizing: border-box; }
+        @keyframes quoteFloat {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes geoFloat1 {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.12; }
+          50% { transform: translate(6px, -10px) rotate(15deg); opacity: 0.2; }
+        }
+        @keyframes geoFloat2 {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.1; }
+          50% { transform: translate(-8px, 8px) rotate(-10deg); opacity: 0.18; }
+        }
+        @keyframes geoFloat3 {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.08; }
+          50% { transform: translate(4px, 12px) rotate(20deg); opacity: 0.16; }
+        }
+        @keyframes quoteFadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
         html, body { margin: 0; padding: 0; overflow-x: hidden; max-width: 100vw; }
         input, textarea, button { -webkit-appearance: none; border-radius: 0; }
         @media (max-width: 480px) {
@@ -964,7 +999,79 @@ export default function DayZeroFramework() {
                 </>
             </div>
             {/* Right column — placeholder for quotes (next step) */}
-            <div className="quote-column" style={{ flex: "1 1 260px", minWidth: 0 }} />
+            {/* Right column — contextual quote */}
+            <div className="quote-column" style={{ flex: "1 1 280px", minWidth: 0, position: "sticky", top: "1.5rem", alignSelf: "flex-start" }}>
+              {(() => {
+                const activeQuestion = activeSection?.questions?.find(q => q.id === activeQ);
+                const color = activeSection?.color || "#3AAFB9";
+                return (
+                  <div key={activeQ || "default"} style={{
+                    position: "relative", overflow: "hidden",
+                    animation: "quoteFadeIn 0.4s ease-out",
+                  }}>
+                    {/* Geometric floating SVGs */}
+                    <svg width="40" height="40" viewBox="0 0 40 40" style={{ position: "absolute", top: 8, right: 12, animation: "geoFloat1 6s ease-in-out infinite" }}>
+                      <circle cx="20" cy="20" r="18" fill="none" stroke={color} strokeWidth="0.8" />
+                    </svg>
+                    <svg width="32" height="32" viewBox="0 0 32 32" style={{ position: "absolute", bottom: 40, left: 10, animation: "geoFloat2 8s ease-in-out infinite" }}>
+                      <rect x="4" y="4" width="24" height="24" fill="none" stroke={color} strokeWidth="0.7" rx="2" />
+                    </svg>
+                    <svg width="28" height="28" viewBox="0 0 28 28" style={{ position: "absolute", top: "50%", right: 8, animation: "geoFloat3 7s ease-in-out infinite" }}>
+                      <polygon points="14,2 26,26 2,26" fill="none" stroke={color} strokeWidth="0.7" />
+                    </svg>
+                    <svg width="20" height="20" viewBox="0 0 20 20" style={{ position: "absolute", bottom: 12, right: "40%", animation: "geoFloat1 9s ease-in-out infinite" }}>
+                      <line x1="0" y1="10" x2="20" y2="10" stroke={color} strokeWidth="0.6" />
+                      <line x1="10" y1="0" x2="10" y2="20" stroke={color} strokeWidth="0.6" />
+                    </svg>
+
+                    {/* Quote card */}
+                    <div style={{
+                      background: "#fff",
+                      border: "1px solid #e0dcd7",
+                      borderLeft: `3px solid ${color}`,
+                      padding: "2rem 1.5rem 1.5rem",
+                      borderRadius: 4,
+                      animation: "quoteFloat 6s ease-in-out infinite",
+                      position: "relative", zIndex: 1,
+                    }}>
+                      {/* Big quote mark */}
+                      <div style={{
+                        fontSize: "4.5rem", lineHeight: 0.8, fontFamily: "Georgia, serif",
+                        color, opacity: 0.2, marginBottom: "0.2rem",
+                        userSelect: "none",
+                      }}>
+                        &ldquo;
+                      </div>
+
+                      {activeQuestion?.quote ? (
+                        <>
+                          <p style={{
+                            fontStyle: "italic", color: "#444",
+                            fontSize: "clamp(0.95rem, 2.5vw, 1.08rem)",
+                            lineHeight: 1.6, margin: "0 0 1.2rem",
+                          }}>
+                            {activeQuestion.quote.text}
+                          </p>
+                          <div style={{
+                            fontSize: "0.85rem", color: "#aaa",
+                            borderTop: "1px solid #f0ece7", paddingTop: "0.8rem",
+                          }}>
+                            — {activeQuestion.quote.author}
+                          </div>
+                        </>
+                      ) : (
+                        <p style={{
+                          color: "#aaa", fontStyle: "italic",
+                          fontSize: "0.95rem", lineHeight: 1.6, margin: 0,
+                        }}>
+                          Open a question to see an inspiring thought to guide your reflection.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
             </div>
           )}
 
