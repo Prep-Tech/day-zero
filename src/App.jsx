@@ -1015,7 +1015,7 @@ export default function DayZeroFramework() {
             </div>
             {/* Right column — placeholder for quotes (next step) */}
             {/* Right column — contextual quote */}
-            <div className="quote-column" style={{ width: 300, flexShrink: 0, position: "sticky", top: "1rem", alignSelf: "flex-start" }}>
+            <div className="quote-column" style={{ width: 300, flexShrink: 0, position: "sticky", top: "calc(50vh - 120px)", alignSelf: "flex-start" }}>
               {(() => {
                 const activeQuestion = activeSection?.questions?.find(q => q.id === activeQ);
                 const color = activeSection?.color || "#3AAFB9";
