@@ -618,48 +618,50 @@ export default function DayZeroFramework() {
         }
       `}</style>
 
-      {/* Header — thin bar with left brand + right auth buttons */}
-      <div style={{ background: "#3AAFB9", color: "#fff", padding: "0.75rem 1.2rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: "0.6rem" }}>
-          <h1 style={{ margin: 0, fontSize: "clamp(1.4rem, 4vw, 1.8rem)", fontWeight: "700", color: "#fff" }}>Day Zero</h1>
-          <span style={{ fontSize: "clamp(0.6rem, 2vw, 0.75rem)", letterSpacing: "0.2em", color: "#fff", opacity: 0.85 }}>A FRAMEWORK FOR RENEWAL</span>
-        </div>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          {user ? (
-            <button
-              onClick={handleLogout}
-              style={{
-                background: "rgba(255,255,255,0.2)", color: "#fff", border: "none",
-                padding: "0.4rem 0.9rem", fontSize: "0.75rem", letterSpacing: "0.1em",
-                cursor: "pointer", fontFamily: "'Montserrat', sans-serif", borderRadius: 2,
-              }}
-            >
-              LOG OUT
-            </button>
-          ) : (
-            <>
+      {/* Header */}
+      <div style={{ background: "#3AAFB9", color: "#fff", padding: "0.6rem clamp(0.8rem, 3vw, 1.2rem)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: "clamp(1.3rem, 4vw, 1.7rem)", fontWeight: "700", color: "#fff", lineHeight: 1.2 }}>Day Zero</h1>
+            <div style={{ fontSize: "clamp(0.5rem, 1.5vw, 0.68rem)", letterSpacing: "0.2em", color: "#fff", opacity: 0.85, marginTop: "0.15rem" }}>A FRAMEWORK FOR RENEWAL</div>
+          </div>
+          <div style={{ display: "flex", gap: "0.4rem", flexShrink: 0 }}>
+            {user ? (
               <button
-                onClick={() => setShowAuthPage(true)}
+                onClick={handleLogout}
                 style={{
-                  background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.5)",
-                  padding: "0.4rem 0.9rem", fontSize: "0.75rem", letterSpacing: "0.1em",
+                  background: "rgba(255,255,255,0.2)", color: "#fff", border: "none",
+                  padding: "0.35rem 0.7rem", fontSize: "0.7rem", letterSpacing: "0.1em",
                   cursor: "pointer", fontFamily: "'Montserrat', sans-serif", borderRadius: 2,
                 }}
               >
-                LOG IN
+                LOG OUT
               </button>
-              <button
-                onClick={() => setShowAuthPage(true)}
-                style={{
-                  background: "#fff", color: "#3AAFB9", border: "none",
-                  padding: "0.4rem 0.9rem", fontSize: "0.75rem", letterSpacing: "0.1em",
-                  cursor: "pointer", fontFamily: "'Montserrat', sans-serif", borderRadius: 2, fontWeight: 600,
-                }}
-              >
-                SIGN UP
-              </button>
-            </>
-          )}
+            ) : (
+              <>
+                <button
+                  onClick={() => setShowAuthPage(true)}
+                  style={{
+                    background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.5)",
+                    padding: "0.35rem 0.7rem", fontSize: "0.7rem", letterSpacing: "0.1em",
+                    cursor: "pointer", fontFamily: "'Montserrat', sans-serif", borderRadius: 2,
+                  }}
+                >
+                  LOG IN
+                </button>
+                <button
+                  onClick={() => setShowAuthPage(true)}
+                  style={{
+                    background: "#fff", color: "#3AAFB9", border: "none",
+                    padding: "0.35rem 0.7rem", fontSize: "0.7rem", letterSpacing: "0.1em",
+                    cursor: "pointer", fontFamily: "'Montserrat', sans-serif", borderRadius: 2, fontWeight: 600,
+                  }}
+                >
+                  SIGN UP
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
