@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { supabase } from "./lib/supabase";
+import Auth from "./Auth";
 
 const sections = [
   {
@@ -238,6 +240,118 @@ export default function DayZeroFramework() {
   const [userName, setUserName] = useState("");
   const [nameSubmitted, setNameSubmitted] = useState(false);
 
+  // Auth state
+  const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState("");
+  const [resetMode, setResetMode] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [resetMsg, setResetMsg] = useState("");
+  const [resetError, setResetError] = useState("");
+
+  // Check for existing session on mount
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      setSession(s);
+      if (s?.user) {
+        setUser(s.user);
+        setUserName(s.user.user_metadata?.display_name || "");
+        setNameSubmitted(true);
+      }
+      setAuthLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
+      setSession(s);
+      setUser(s?.user || null);
+      if (event === "PASSWORD_RECOVERY") {
+        setResetMode(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Load saved progress when user logs in
+  useEffect(() => {
+    if (!user) return;
+    const loadProgress = async () => {
+      const { data } = await supabase
+        .from("progress")
+        .select("answers, section_idx, accepted")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (data) {
+        setAnswers(data.answers || {});
+        setActiveSectionIdx(data.section_idx || 0);
+        setAccepted(data.accepted || false);
+      }
+    };
+    loadProgress();
+  }, [user]);
+
+  const handleAuth = (u, s) => {
+    setUser(u);
+    setSession(s);
+    setUserName(u.user_metadata?.display_name || "");
+    setNameSubmitted(true);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setSession(null);
+    setAnswers({});
+    setAccepted(false);
+    setActiveSectionIdx(0);
+    setActiveQ(null);
+    setShowExport(false);
+    setUserName("");
+    setNameSubmitted(false);
+  };
+
+  const handleSave = useCallback(async () => {
+    if (!user) return;
+    setSaving(true);
+    setSaveMsg("");
+    const { error } = await supabase
+      .from("progress")
+      .upsert({
+        user_id: user.id,
+        answers,
+        section_idx: activeSectionIdx,
+        accepted,
+      }, { onConflict: "user_id" });
+    setSaving(false);
+    setSaveMsg(error ? "Failed to save. Try again." : "Progress saved!");
+    if (!error) setTimeout(() => setSaveMsg(""), 3000);
+  }, [user, answers, activeSectionIdx, accepted]);
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setResetError("");
+    setResetMsg("");
+    if (newPassword.length < 6) return setResetError("Password must be at least 6 characters.");
+    if (newPassword !== confirmNewPassword) return setResetError("Passwords do not match.");
+
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      setResetError(error.message);
+    } else {
+      setResetMsg("Password updated! Redirecting...");
+      setTimeout(() => {
+        setResetMode(false);
+        setNewPassword("");
+        setConfirmNewPassword("");
+        setResetMsg("");
+        window.history.replaceState({}, "", "/");
+      }, 2000);
+    }
+  };
+
   const activeSection = sections[activeSectionIdx];
   const isLastSection = activeSectionIdx === sections.length - 1;
 
@@ -425,6 +539,48 @@ export default function DayZeroFramework() {
   const count = getCompletionCount();
   const pct = Math.round((count / totalQuestions) * 100);
 
+  if (authLoading) {
+    return (
+      <div style={{ minHeight: "100vh", background: "#F7F4EF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Montserrat', sans-serif" }}>
+        <div style={{ color: "#3AAFB9", fontSize: "1.1rem" }}>Loading...</div>
+      </div>
+    );
+  }
+
+  if (resetMode) {
+    const rpInput = {
+      width: "100%", border: "1px solid #e0dcd7", background: "#fff",
+      padding: "0.75rem", fontSize: "1rem", fontFamily: "'Montserrat', sans-serif",
+      color: "#1a1a1a", outline: "none", marginBottom: "0.8rem", borderRadius: 2,
+    };
+    return (
+      <div style={{ minHeight: "100vh", background: "#F7F4EF", fontFamily: "'Montserrat', sans-serif", color: "#1a1a1a" }}>
+        <div style={{ background: "#3AAFB9", color: "#fff", padding: "1.5rem 1rem", textAlign: "center" }}>
+          <h1 style={{ margin: 0, fontSize: "clamp(2.72rem, 7vw, 3.37rem)", fontWeight: "700", color: "#fff" }}>Day Zero</h1>
+          <div style={{ fontSize: "0.94rem", letterSpacing: "0.3em", color: "#fff", marginTop: "0.4rem", opacity: 0.85 }}>A FRAMEWORK FOR RENEWAL</div>
+        </div>
+        <div style={{ maxWidth: 420, margin: "2rem auto", background: "#fff", border: "1px solid #e0dcd7", padding: "clamp(1.5rem, 5vw, 2.5rem)" }}>
+          <h2 style={{ fontWeight: 400, fontSize: "1.3rem", marginTop: 0, marginBottom: "1rem" }}>Choose a new password</h2>
+          <form onSubmit={handleResetPassword}>
+            <label style={{ fontSize: "0.85rem", color: "#777", marginBottom: "0.3rem", display: "block" }}>New password</label>
+            <input type="password" placeholder="At least 6 characters" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} style={rpInput} autoFocus />
+            <label style={{ fontSize: "0.85rem", color: "#777", marginBottom: "0.3rem", display: "block" }}>Confirm new password</label>
+            <input type="password" placeholder="Re-enter password" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} style={rpInput} />
+            {resetError && <div style={{ color: "#e53e3e", fontSize: "0.9rem", marginBottom: "0.8rem" }}>{resetError}</div>}
+            {resetMsg && <div style={{ color: "#3AAFB9", fontSize: "0.9rem", marginBottom: "0.8rem" }}>{resetMsg}</div>}
+            <button type="submit" style={{
+              background: "#3AAFB9", color: "#fff", border: "none", padding: "0.9rem",
+              fontSize: "0.95rem", letterSpacing: "0.15em", cursor: "pointer", width: "100%",
+              fontFamily: "'Montserrat', sans-serif",
+            }}>
+              UPDATE PASSWORD
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ minHeight: "100vh", background: "#F7F4EF", fontFamily: "'Montserrat', sans-serif", color: "#1a1a1a" }}>
 
@@ -442,7 +598,20 @@ export default function DayZeroFramework() {
       `}</style>
 
       {/* Header */}
-      <div style={{ background: "#3AAFB9", color: "#fff", padding: "1.5rem 1rem", textAlign: "center" }}>
+      <div style={{ background: "#3AAFB9", color: "#fff", padding: "1.5rem 1rem", textAlign: "center", position: "relative" }}>
+        {user && (
+          <button
+            onClick={handleLogout}
+            style={{
+              position: "absolute", top: "1rem", right: "1rem",
+              background: "rgba(255,255,255,0.2)", color: "#fff", border: "none",
+              padding: "0.4rem 0.8rem", fontSize: "0.75rem", letterSpacing: "0.1em",
+              cursor: "pointer", fontFamily: "'Montserrat', sans-serif", borderRadius: 2,
+            }}
+          >
+            LOG OUT
+          </button>
+        )}
         <h1 style={{ margin: 0, fontSize: "clamp(2.72rem, 7vw, 3.37rem)", fontWeight: "700", color: "#fff" }}>Day Zero</h1>
         <div style={{ fontSize: "0.94rem", letterSpacing: "0.3em", color: "#fff", marginTop: "0.4rem", opacity: 0.85 }}>A FRAMEWORK FOR RENEWAL</div>
         <p style={{ margin: "0.4rem 0 0", color: "#fff", opacity: 0.8, fontSize: "clamp(0.82rem, 3vw, 0.95rem)", fontStyle: "italic" }}>
@@ -450,73 +619,61 @@ export default function DayZeroFramework() {
         </p>
       </div>
 
-      {/* Intro */}
+      {/* Intro + Auth */}
       {!accepted && (
-        <div style={{ maxWidth: 620, margin: "2rem auto", background: "#fff", padding: "clamp(1.2rem, 5vw, 2.5rem)", border: "1px solid #e0dcd7" }}>
-          <div style={{ fontSize: "0.84rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "1.1rem" }}>BEFORE YOU BEGIN</div>
-          <h2 style={{ fontWeight: 400, fontSize: "clamp(1.35rem, 5vw, 1.65rem)", marginTop: 0 }}>The Day Zero Premise</h2>
-          <p style={{ color: "#444", lineHeight: 1.8, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>
-            This exercise asks both of you to set aside everything that has happened and answer honestly about the future you <em>want</em> — not the past you're carrying.
-          </p>
-          <p style={{ color: "#444", lineHeight: 1.8, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>There are no right answers. There is no winner. The only goal is clarity — for yourself, and then for each other.</p>
-          <ul style={{ color: "#444", lineHeight: 2, paddingLeft: "1.2rem", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
-            <li>Each partner completes all three sections <strong>independently</strong></li>
-            <li>Use the fill-in sentences to guide, not limit, what you want to say</li>
-            <li>SMART goals keep intentions <strong>concrete and actionable</strong></li>
-            <li>Save your answers as a PDF when you're ready to share</li>
-          </ul>
-          <div style={{ background: "#F7F4EF", borderLeft: "3px solid #3AAFB9", padding: "1rem 1.2rem", margin: "1.5rem 0", fontStyle: "italic", color: "#444", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
-            "If today was Day Zero — all past issues forgiven and forgotten — how do you see your life going forward?"
+        <div style={{ maxWidth: 620, margin: "2rem auto", padding: "0 clamp(0.8rem, 4vw, 1rem)" }}>
+          <div style={{ background: "#fff", padding: "clamp(1.2rem, 5vw, 2.5rem)", border: "1px solid #e0dcd7", marginBottom: "1.5rem" }}>
+            <div style={{ fontSize: "0.84rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "1.1rem" }}>BEFORE YOU BEGIN</div>
+            <h2 style={{ fontWeight: 400, fontSize: "clamp(1.35rem, 5vw, 1.65rem)", marginTop: 0 }}>The Day Zero Premise</h2>
+            <p style={{ color: "#444", lineHeight: 1.8, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>
+              This exercise asks both of you to set aside everything that has happened and answer honestly about the future you <em>want</em> — not the past you're carrying.
+            </p>
+            <p style={{ color: "#444", lineHeight: 1.8, fontSize: "clamp(1.02rem, 3.5vw, 1.12rem)" }}>There are no right answers. There is no winner. The only goal is clarity — for yourself, and then for each other.</p>
+            <ul style={{ color: "#444", lineHeight: 2, paddingLeft: "1.2rem", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
+              <li>Each partner completes all three sections <strong>independently</strong></li>
+              <li>Use the fill-in sentences to guide, not limit, what you want to say</li>
+              <li>SMART goals keep intentions <strong>concrete and actionable</strong></li>
+              <li>Save your answers as a PDF when you're ready to share</li>
+            </ul>
+            <div style={{ background: "#F7F4EF", borderLeft: "3px solid #3AAFB9", padding: "1rem 1.2rem", margin: "1.5rem 0", fontStyle: "italic", color: "#444", fontSize: "clamp(1rem, 3.5vw, 1.12rem)" }}>
+              "If today was Day Zero — all past issues forgiven and forgotten — how do you see your life going forward?"
+            </div>
+            {user ? (
+              <button onClick={() => setAccepted(true)} style={{ background: "#3AAFB9", color: "#fff", border: "none", padding: "1rem 2rem", fontSize: "clamp(0.92rem, 3vw, 1.02rem)", letterSpacing: "0.2em", cursor: "pointer", width: "100%" }}>
+                I ACCEPT THE PREMISE — BEGIN
+              </button>
+            ) : (
+              <p style={{ color: "#aaa", fontSize: "0.95rem", textAlign: "center", marginBottom: 0 }}>Sign up or log in below to begin and save your progress.</p>
+            )}
           </div>
-          <button onClick={() => setAccepted(true)} style={{ background: "#3AAFB9", color: "#fff", border: "none", padding: "1rem 2rem", fontSize: "clamp(0.92rem, 3vw, 1.02rem)", letterSpacing: "0.2em", cursor: "pointer", width: "100%" }}>
-            I ACCEPT THE PREMISE — BEGIN
-          </button>
+
+          {/* Auth form — only show if not logged in */}
+          {!user && <Auth onAuth={handleAuth} />}
         </div>
       )}
 
-      {accepted && (
+      {accepted && user && (
         <div style={{ maxWidth: 700, margin: "0 auto", padding: "1.5rem clamp(0.8rem, 4vw, 1rem)" }}>
 
-          {/* Name entry */}
-          {!nameSubmitted && (
-            <div style={{ maxWidth: 480, margin: "0 auto 2rem", background: "#fff", border: "1px solid #e0dcd7", padding: "clamp(1.35rem, 5vw, 2.12rem)" }}>
-              <div style={{ fontSize: "1rem", letterSpacing: "0.25em", color: "#3AAFB9", marginBottom: "0.8rem" }}>BEFORE YOU BEGIN</div>
-              <h2 style={{ fontWeight: 400, fontSize: "clamp(1.35rem, 5vw, 1.65rem)", marginBottom: "0.5rem" }}>What is your name?</h2>
-              <p style={{ color: "#777", fontSize: "clamp(1rem, 3.5vw, 1.12rem)", lineHeight: 1.7, marginBottom: "1.5rem" }}>
-                Your name will appear on your exported PDF so your partner knows whose answers they're reading.
-              </p>
-              <input
-                autoFocus
-                placeholder="Your first name"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter" && userName.trim()) setNameSubmitted(true); }}
-                style={{
-                  width: "100%", border: "none", borderBottom: "2px solid #3AAFB9",
-                  background: "transparent", padding: "0.6rem 0.3rem",
-                  fontSize: "clamp(1.25rem, 5vw, 1.45rem)",
-                  fontFamily: "'Montserrat', sans-serif", color: "#1a1a1a", outline: "none",
-                  marginBottom: "1.5rem",
-                }}
-              />
-              <button
-                onClick={() => { if (userName.trim()) setNameSubmitted(true); }}
-                disabled={!userName.trim()}
-                style={{
-                  background: userName.trim() ? "#3AAFB9" : "#ddd",
-                  color: userName.trim() ? "#fff" : "#aaa",
-                  border: "none", padding: "1rem 2rem",
-                  fontSize: "clamp(0.92rem, 3vw, 1.02rem)",
-                  letterSpacing: "0.2em", cursor: userName.trim() ? "pointer" : "default", width: "100%",
-                }}
-              >
-                BEGIN →
-              </button>
-            </div>
+          {/* Save button bar */}
+          <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "0.8rem", marginBottom: "1rem" }}>
+            {saveMsg && <span style={{ fontSize: "0.85rem", color: saveMsg.includes("Failed") ? "#e53e3e" : "#3AAFB9" }}>{saveMsg}</span>}
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              style={{
+                background: "#fff", color: "#3AAFB9", border: "1px solid #3AAFB9",
+                padding: "0.5rem 1.2rem", fontSize: "0.85rem", letterSpacing: "0.1em",
+                cursor: saving ? "default" : "pointer", fontFamily: "'Montserrat', sans-serif",
+                opacity: saving ? 0.6 : 1, borderRadius: 2,
+              }}
+            >
+              {saving ? "SAVING..." : "SAVE PROGRESS"}
+            </button>
+          </div>
           )}
 
-          {nameSubmitted && (
-            <div>
+          <div>
               {/* Progress stepper */}
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center", marginBottom: "1.5rem", overflowX: "auto", paddingBottom: "0.25rem" }}>
                 {sections.map((s, i) => (
@@ -707,7 +864,6 @@ export default function DayZeroFramework() {
                 </>
               )}
             </div>
-          )}
         </div>
       )}
     </div>
