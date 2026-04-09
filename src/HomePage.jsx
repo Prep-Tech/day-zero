@@ -17,43 +17,86 @@ const ctaBtn = (onClick, text) => (
   </button>
 );
 
-// Fake mockup of the questionnaire UI
-const MockupCard = () => (
-  <div style={{
-    background: "#fff", border: "1px solid #e0dcd7", borderRadius: 6,
-    padding: "1.5rem", maxWidth: 480, boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
-    transform: "none", margin: "0 auto",
-  }}>
-    {/* Stepper dots */}
-    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1.2rem", justifyContent: "center" }}>
-      <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#3AAFB9", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.7rem" }}>✓</div>
-      <div style={{ width: 20, height: 1, background: "#3AAFB9" }} />
-      <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#A06CD5", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.85rem" }}>⌂</div>
-      <div style={{ width: 20, height: 1, background: "#ddd" }} />
-      <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid #ddd", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", color: "#bbb", fontSize: "0.85rem" }}>∞</div>
-    </div>
-    {/* Section label */}
+// Interactive mockup with 3 section examples
+const mockupSlides = [
+  {
+    color: "#3AAFB9", icon: "♡", label: "As a Partner",
+    desc: "Define the kind of partner you want to be...",
+    badge: "SPECIFIC", badgeBg: "#d1fafe", badgeColor: "#02b7d6",
+    prompt: "The kind of partner I want to be",
+    sentence: (c) => <>Starting today, I want to show up as a partner who is <span style={{ borderBottom: `2px solid ${c}`, color: c, fontStyle: "italic" }}>patient</span>, <span style={{ borderBottom: `2px solid ${c}`, color: c, fontStyle: "italic" }}>present</span>, and <span style={{ borderBottom: `2px solid ${c}`, color: c, fontStyle: "italic" }}>affectionate</span>.</>,
+  },
+  {
+    color: "#A06CD5", icon: "⌂", label: "As a Parent",
+    desc: "Focus on what you personally want to give your children...",
+    badge: "ACHIEVABLE", badgeBg: "#f4eaff", badgeColor: "#7f32fe",
+    prompt: "What I will personally stop doing in front of my children",
+    sentence: (c) => <>I commit to no longer <span style={{ borderBottom: `2px solid ${c}`, color: c, fontStyle: "italic" }}>raising my voice</span> in front of my child(ren). When I feel that urge rising, I will instead <span style={{ borderBottom: `2px solid ${c}`, color: c, fontStyle: "italic" }}>take a breath and step away</span>.</>,
+  },
+  {
+    color: "#C60F7B", icon: "∞", label: "Shared Vision",
+    desc: "Share what you think your family needs most...",
+    badge: "RELEVANT", badgeBg: "#dcfce9", badgeColor: "#22c55f",
+    prompt: "Why I think this relationship is still worth fighting for",
+    sentence: (c) => <>I think what still connects us is <span style={{ borderBottom: `2px solid ${c}`, color: c, fontStyle: "italic" }}>our shared history</span>. I feel our children deserve to see us <span style={{ borderBottom: `2px solid ${c}`, color: c, fontStyle: "italic" }}>choose each other every day</span>.</>,
+  },
+];
+
+const MockupCard = () => {
+  const [idx, setIdx] = React.useState(0);
+  React.useEffect(() => {
+    const t = setInterval(() => setIdx((i) => (i + 1) % 3), 5000);
+    return () => clearInterval(t);
+  }, []);
+  const s = mockupSlides[idx];
+  return (
     <div style={{
-      background: "#fff", borderLeft: "3px solid #A06CD5",
-      padding: "0.6rem 0.8rem", marginBottom: "0.8rem",
-      fontSize: "0.8rem", color: "#444",
+      background: "#fff", border: "1px solid #e0dcd7", borderRadius: 6,
+      padding: "1.5rem", maxWidth: 480, boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
+      margin: "0 auto",
     }}>
-      <strong style={{ color: "#1a1a1a" }}>⌂ As a Parent —</strong> Focus on what you personally want to give your children...
+      {/* Clickable stepper dots */}
+      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1.2rem", justifyContent: "center" }}>
+        {mockupSlides.map((sl, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <div style={{ width: 20, height: 1, background: i <= idx ? sl.color : "#ddd" }} />}
+            <div
+              onClick={() => setIdx(i)}
+              style={{
+                width: 28, height: 28, borderRadius: "50%", cursor: "pointer",
+                background: i <= idx ? mockupSlides[i].color : "#fff",
+                border: i <= idx ? "none" : "2px solid #ddd",
+                color: i <= idx ? "#fff" : "#bbb",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "0.85rem", transition: "all 0.3s",
+              }}
+            >{i < idx ? "✓" : mockupSlides[i].icon}</div>
+          </React.Fragment>
+        ))}
+      </div>
+      {/* Section label */}
+      <div style={{
+        background: "#fff", borderLeft: `3px solid ${s.color}`,
+        padding: "0.6rem 0.8rem", marginBottom: "0.8rem",
+        fontSize: "0.8rem", color: "#444", transition: "border-color 0.3s",
+      }}>
+        <strong style={{ color: "#1a1a1a" }}>{s.icon} {s.label} —</strong> {s.desc}
+      </div>
+      {/* Question card */}
+      <div style={{ border: `1px solid ${s.color}`, borderLeft: `3px solid ${s.color}`, padding: "0.8rem", marginBottom: "0.6rem", transition: "border-color 0.3s" }}>
+        <span style={{
+          background: s.badgeBg, color: s.badgeColor, fontSize: "0.6rem",
+          letterSpacing: "0.12em", fontWeight: 600, padding: "2px 6px", borderRadius: 3,
+        }}>{s.badge}</span>
+        <div style={{ fontSize: "0.85rem", color: "#1a1a1a", marginTop: "0.4rem" }}>{s.prompt}</div>
+      </div>
+      {/* Fill-in sentence */}
+      <div style={{ background: "#F7F4EF", padding: "0.8rem", fontSize: "0.8rem", color: "#444", lineHeight: 1.6 }}>
+        {s.sentence(s.color)}
+      </div>
     </div>
-    {/* Question card */}
-    <div style={{ border: "1px solid #A06CD5", borderLeft: "3px solid #A06CD5", padding: "0.8rem", marginBottom: "0.6rem" }}>
-      <span style={{
-        background: "#f4eaff", color: "#7f32fe", fontSize: "0.6rem",
-        letterSpacing: "0.12em", fontWeight: 600, padding: "2px 6px", borderRadius: 3,
-      }}>ACHIEVABLE</span>
-      <div style={{ fontSize: "0.85rem", color: "#1a1a1a", marginTop: "0.4rem" }}>What I will personally stop doing in front of my children</div>
-    </div>
-    {/* Fill-in sentence */}
-    <div style={{ background: "#F7F4EF", padding: "0.8rem", fontSize: "0.8rem", color: "#444", lineHeight: 1.6 }}>
-      I commit to no longer <span style={{ borderBottom: "2px solid #A06CD5", color: "#A06CD5", fontStyle: "italic" }}>raising my voice</span> in front of my child(ren). When I feel that urge rising, I will instead <span style={{ borderBottom: "2px solid #A06CD5", color: "#A06CD5", fontStyle: "italic" }}>take a breath and step away</span>.
-    </div>
-  </div>
-);
+  );
+};
 
 export default function HomePage({ onBegin, onSignUp, user }) {
   const [showModal, setShowModal] = useState(false);
@@ -134,8 +177,8 @@ export default function HomePage({ onBegin, onSignUp, user }) {
       {/* ═══ THE PROBLEM ═══ */}
       {section("#fff", (
         <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center" }}>
-          <div style={{ fontSize: "0.9rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>THE PROBLEM</div>
-          <h3 style={{ fontSize: "clamp(1.3rem, 3.5vw, 1.75rem)", fontWeight: 600, margin: "0 0 1.2rem", color: "#1a1a1a" }}>
+          <div style={{ fontSize: "18px", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>THE PROBLEM</div>
+          <h3 style={{ fontSize: "24px", fontWeight: 600, margin: "0 0 1.2rem", color: "#1a1a1a" }}>
             Important conversations deserve more than a heated moment
           </h3>
           <p style={{ color: "#555", fontSize: "clamp(1rem, 3vw, 1.12rem)", lineHeight: 1.6, margin: "0 0 1rem" }}>
@@ -151,8 +194,8 @@ export default function HomePage({ onBegin, onSignUp, user }) {
       {section("#F7F4EF", (
         <>
           <div style={{ textAlign: "center", marginBottom: "clamp(2rem, 5vw, 3rem)" }}>
-            <div style={{ fontSize: "0.9rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>HOW IT WORKS</div>
-            <h3 style={{ fontSize: "clamp(1.3rem, 3.5vw, 1.75rem)", fontWeight: 600, margin: 0, color: "#1a1a1a" }}>
+            <div style={{ fontSize: "18px", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>HOW IT WORKS</div>
+            <h3 style={{ fontSize: "24px", fontWeight: 600, margin: 0, color: "#1a1a1a" }}>
               Three sections. Fifteen questions. One fresh start.
             </h3>
           </div>
@@ -180,8 +223,8 @@ export default function HomePage({ onBegin, onSignUp, user }) {
       {section("#fff", (
         <>
           <div style={{ textAlign: "center", marginBottom: "clamp(2rem, 5vw, 3rem)" }}>
-            <div style={{ fontSize: "0.9rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>WHY IT WORKS</div>
-            <h3 style={{ fontSize: "clamp(1.3rem, 3.5vw, 1.75rem)", fontWeight: 600, margin: 0, color: "#1a1a1a" }}>
+            <div style={{ fontSize: "18px", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>WHY IT WORKS</div>
+            <h3 style={{ fontSize: "24px", fontWeight: 600, margin: 0, color: "#1a1a1a" }}>
               Decouple the conversation from the conflict
             </h3>
           </div>
@@ -209,8 +252,8 @@ export default function HomePage({ onBegin, onSignUp, user }) {
       {section("#F7F4EF", (
         <div className="preview-grid" style={{ display: "flex", gap: "clamp(1.5rem, 5vw, 3rem)", flexWrap: "wrap", alignItems: "center" }}>
           <div style={{ flex: "1 1 340px", minWidth: 0 }}>
-            <div style={{ fontSize: "0.9rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>INSIDE DAY ZERO</div>
-            <h3 style={{ fontSize: "clamp(1.3rem, 3.5vw, 1.75rem)", fontWeight: 600, margin: "0 0 1rem", color: "#1a1a1a" }}>
+            <div style={{ fontSize: "18px", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>INSIDE DAY ZERO</div>
+            <h3 style={{ fontSize: "24px", fontWeight: 600, margin: "0 0 1rem", color: "#1a1a1a" }}>
               Guided sentences, not blank pages
             </h3>
             <p style={{ color: "#555", fontSize: "clamp(0.95rem, 3vw, 1.08rem)", lineHeight: 1.6, margin: "0 0 1rem" }}>
@@ -230,8 +273,8 @@ export default function HomePage({ onBegin, onSignUp, user }) {
       {/* ═══ THE PREMISE ═══ */}
       {section("#fff", (
         <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
-          <div style={{ fontSize: "0.9rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>THE PREMISE</div>
-          <h3 style={{ fontSize: "clamp(1.3rem, 3.5vw, 1.75rem)", fontWeight: 600, margin: "0 0 1.2rem", color: "#1a1a1a" }}>
+          <div style={{ fontSize: "18px", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>THE PREMISE</div>
+          <h3 style={{ fontSize: "24px", fontWeight: 600, margin: "0 0 1.2rem", color: "#1a1a1a" }}>
             All past issues are forgiven and forgotten
           </h3>
           <div style={{
