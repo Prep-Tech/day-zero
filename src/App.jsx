@@ -246,6 +246,11 @@ export default function DayZeroFramework() {
   const [authLoading, setAuthLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
+  const [resetMode, setResetMode] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [resetMsg, setResetMsg] = useState("");
+  const [resetError, setResetError] = useState("");
 
   // Check for existing session on mount
   useEffect(() => {
@@ -259,9 +264,12 @@ export default function DayZeroFramework() {
       setAuthLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s);
       setUser(s?.user || null);
+      if (event === "PASSWORD_RECOVERY") {
+        setResetMode(true);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -321,6 +329,28 @@ export default function DayZeroFramework() {
     setSaveMsg(error ? "Failed to save. Try again." : "Progress saved!");
     if (!error) setTimeout(() => setSaveMsg(""), 3000);
   }, [user, answers, activeSectionIdx, accepted]);
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setResetError("");
+    setResetMsg("");
+    if (newPassword.length < 6) return setResetError("Password must be at least 6 characters.");
+    if (newPassword !== confirmNewPassword) return setResetError("Passwords do not match.");
+
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      setResetError(error.message);
+    } else {
+      setResetMsg("Password updated! Redirecting...");
+      setTimeout(() => {
+        setResetMode(false);
+        setNewPassword("");
+        setConfirmNewPassword("");
+        setResetMsg("");
+        window.history.replaceState({}, "", "/");
+      }, 2000);
+    }
+  };
 
   const activeSection = sections[activeSectionIdx];
   const isLastSection = activeSectionIdx === sections.length - 1;
@@ -513,6 +543,40 @@ export default function DayZeroFramework() {
     return (
       <div style={{ minHeight: "100vh", background: "#F7F4EF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Montserrat', sans-serif" }}>
         <div style={{ color: "#3AAFB9", fontSize: "1.1rem" }}>Loading...</div>
+      </div>
+    );
+  }
+
+  if (resetMode) {
+    const rpInput = {
+      width: "100%", border: "1px solid #e0dcd7", background: "#fff",
+      padding: "0.75rem", fontSize: "1rem", fontFamily: "'Montserrat', sans-serif",
+      color: "#1a1a1a", outline: "none", marginBottom: "0.8rem", borderRadius: 2,
+    };
+    return (
+      <div style={{ minHeight: "100vh", background: "#F7F4EF", fontFamily: "'Montserrat', sans-serif", color: "#1a1a1a" }}>
+        <div style={{ background: "#3AAFB9", color: "#fff", padding: "1.5rem 1rem", textAlign: "center" }}>
+          <h1 style={{ margin: 0, fontSize: "clamp(2.72rem, 7vw, 3.37rem)", fontWeight: "700", color: "#fff" }}>Day Zero</h1>
+          <div style={{ fontSize: "0.94rem", letterSpacing: "0.3em", color: "#fff", marginTop: "0.4rem", opacity: 0.85 }}>A FRAMEWORK FOR RENEWAL</div>
+        </div>
+        <div style={{ maxWidth: 420, margin: "2rem auto", background: "#fff", border: "1px solid #e0dcd7", padding: "clamp(1.5rem, 5vw, 2.5rem)" }}>
+          <h2 style={{ fontWeight: 400, fontSize: "1.3rem", marginTop: 0, marginBottom: "1rem" }}>Choose a new password</h2>
+          <form onSubmit={handleResetPassword}>
+            <label style={{ fontSize: "0.85rem", color: "#777", marginBottom: "0.3rem", display: "block" }}>New password</label>
+            <input type="password" placeholder="At least 6 characters" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} style={rpInput} autoFocus />
+            <label style={{ fontSize: "0.85rem", color: "#777", marginBottom: "0.3rem", display: "block" }}>Confirm new password</label>
+            <input type="password" placeholder="Re-enter password" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} style={rpInput} />
+            {resetError && <div style={{ color: "#e53e3e", fontSize: "0.9rem", marginBottom: "0.8rem" }}>{resetError}</div>}
+            {resetMsg && <div style={{ color: "#3AAFB9", fontSize: "0.9rem", marginBottom: "0.8rem" }}>{resetMsg}</div>}
+            <button type="submit" style={{
+              background: "#3AAFB9", color: "#fff", border: "none", padding: "0.9rem",
+              fontSize: "0.95rem", letterSpacing: "0.15em", cursor: "pointer", width: "100%",
+              fontFamily: "'Montserrat', sans-serif",
+            }}>
+              UPDATE PASSWORD
+            </button>
+          </form>
+        </div>
       </div>
     );
   }

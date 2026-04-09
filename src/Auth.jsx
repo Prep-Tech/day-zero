@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { supabase } from "./lib/supabase";
 
 export default function Auth({ onAuth }) {
-  const [mode, setMode] = useState("login"); // "login" | "signup"
+  const [mode, setMode] = useState("login"); // "login" | "signup" | "forgot"
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSignup = async (e) => {
@@ -70,6 +71,22 @@ export default function Auth({ onAuth }) {
     setLoading(false);
   };
 
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setError("");
+    setInfo("");
+
+    if (!email.trim()) return setError("Please enter your email.");
+
+    setLoading(true);
+    await supabase.functions.invoke("send-reset-email", {
+      body: { email: email.trim() },
+    }).catch(() => {});
+
+    setInfo("If an account exists with that email, you'll receive a reset link shortly.");
+    setLoading(false);
+  };
+
   const inputStyle = {
     width: "100%",
     border: "1px solid #e0dcd7",
@@ -85,8 +102,8 @@ export default function Auth({ onAuth }) {
 
   return (
     <div style={{ maxWidth: 420, margin: "0 auto", background: "#fff", border: "1px solid #e0dcd7", padding: "clamp(1.5rem, 5vw, 2.5rem)" }}>
-      {/* Tabs */}
-      <div style={{ display: "flex", marginBottom: "1.5rem", borderBottom: "2px solid #e0dcd7" }}>
+      {/* Tabs — hide on forgot mode */}
+      <div style={{ display: mode === "forgot" ? "none" : "flex", marginBottom: "1.5rem", borderBottom: "2px solid #e0dcd7" }}>
         <button
           onClick={() => { setMode("login"); setError(""); }}
           style={{
@@ -204,6 +221,67 @@ export default function Auth({ onAuth }) {
           >
             {loading ? "LOGGING IN..." : "LOG IN"}
           </button>
+          <div style={{ textAlign: "center", marginTop: "1rem" }}>
+            <button
+              type="button"
+              onClick={() => { setMode("forgot"); setError(""); setInfo(""); }}
+              style={{
+                background: "none", border: "none", color: "#3AAFB9",
+                fontSize: "0.85rem", cursor: "pointer", fontFamily: "'Montserrat', sans-serif",
+                textDecoration: "underline",
+              }}
+            >
+              Forgot your password?
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Forgot password form */}
+      {mode === "forgot" && (
+        <form onSubmit={handleForgotPassword}>
+          <p style={{ color: "#444", fontSize: "0.95rem", lineHeight: 1.7, marginTop: 0, marginBottom: "1.2rem" }}>
+            Enter your email and we'll send you a link to reset your password.
+          </p>
+
+          <label style={{ fontSize: "0.85rem", color: "#777", marginBottom: "0.3rem", display: "block" }}>Email</label>
+          <input
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={inputStyle}
+            autoFocus
+          />
+
+          {error && <div style={{ color: "#e53e3e", fontSize: "0.9rem", marginBottom: "0.8rem" }}>{error}</div>}
+          {info && <div style={{ color: "#3AAFB9", fontSize: "0.9rem", marginBottom: "0.8rem" }}>{info}</div>}
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              background: "#3AAFB9", color: "#fff", border: "none",
+              padding: "0.9rem", fontSize: "0.95rem", letterSpacing: "0.15em",
+              cursor: loading ? "default" : "pointer", width: "100%",
+              opacity: loading ? 0.7 : 1, fontFamily: "'Montserrat', sans-serif",
+            }}
+          >
+            {loading ? "SENDING..." : "SEND RESET LINK"}
+          </button>
+          <div style={{ textAlign: "center", marginTop: "1rem" }}>
+            <button
+              type="button"
+              onClick={() => { setMode("login"); setError(""); setInfo(""); }}
+              style={{
+                background: "none", border: "none", color: "#3AAFB9",
+                fontSize: "0.85rem", cursor: "pointer", fontFamily: "'Montserrat', sans-serif",
+                textDecoration: "underline",
+              }}
+            >
+              Back to login
+            </button>
+          </div>
         </form>
       )}
     </div>
