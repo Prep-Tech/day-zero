@@ -737,30 +737,8 @@ export default function DayZeroFramework() {
 
       {accepted && !showAuthPage && (
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "1.5rem clamp(0.8rem, 4vw, 2rem)" }}>
-          <div className="form-layout" style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
-          {/* Left column — form */}
-          <div style={{ flex: "1 1 400px", maxWidth: "100%" }}>
 
-          {/* Save button bar — only for logged-in users */}
-          {user && (
-            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "0.8rem", marginBottom: "1rem" }}>
-              {saveMsg && <span style={{ fontSize: "0.85rem", color: saveMsg.includes("Failed") ? "#e53e3e" : "#3AAFB9" }}>{saveMsg}</span>}
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                style={{
-                  background: "#fff", color: "#3AAFB9", border: "1px solid #3AAFB9",
-                  padding: "0.5rem 1.2rem", fontSize: "0.85rem", letterSpacing: "0.1em",
-                  cursor: saving ? "default" : "pointer", fontFamily: "'Montserrat', sans-serif",
-                  opacity: saving ? 0.6 : 1, borderRadius: 2,
-                }}
-              >
-                {saving ? "SAVING..." : "SAVE PROGRESS"}
-              </button>
-            </div>
-          )}
-
-          {/* Guest name prompt — only if not logged in and name not set */}
+          {/* Guest name prompt — centered, before the questionnaire */}
           {!user && !nameSubmitted && (
             <div style={{ maxWidth: 480, margin: "0 auto 1.5rem", background: "#fff", border: "1px solid #e0dcd7", padding: "clamp(1.2rem, 5vw, 2rem)" }}>
               <h2 style={{ fontWeight: 400, fontSize: "clamp(1.2rem, 4vw, 1.4rem)", marginTop: 0, marginBottom: "0.5rem" }}>What is your name?</h2>
@@ -797,8 +775,30 @@ export default function DayZeroFramework() {
             </div>
           )}
 
-          {/* Main questionnaire — show once we have a name */}
           {(user || nameSubmitted) && (
+          <div className="form-layout" style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
+          {/* Left column — form */}
+          <div style={{ flex: "1 1 400px", maxWidth: "100%" }}>
+
+          {/* Save button bar — only for logged-in users */}
+          {user && (
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "0.8rem", marginBottom: "1rem" }}>
+              {saveMsg && <span style={{ fontSize: "0.85rem", color: saveMsg.includes("Failed") ? "#e53e3e" : "#3AAFB9" }}>{saveMsg}</span>}
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                style={{
+                  background: "#fff", color: "#3AAFB9", border: "1px solid #3AAFB9",
+                  padding: "0.5rem 1.2rem", fontSize: "0.85rem", letterSpacing: "0.1em",
+                  cursor: saving ? "default" : "pointer", fontFamily: "'Montserrat', sans-serif",
+                  opacity: saving ? 0.6 : 1, borderRadius: 2,
+                }}
+              >
+                {saving ? "SAVING..." : "SAVE PROGRESS"}
+              </button>
+            </div>
+          )}
+
           <div>
               {/* Progress stepper */}
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center", marginBottom: "1.5rem", overflowX: "auto", paddingBottom: "0.25rem" }}>
@@ -995,11 +995,11 @@ export default function DayZeroFramework() {
                 </>
               )}
             </div>
-          )}
           </div>
           {/* Right column — placeholder for quotes (next step) */}
           <div className="quote-column" style={{ flex: "1 1 260px", minWidth: 0 }} />
           </div>
+          )}
         </div>
       )}
     </div>
