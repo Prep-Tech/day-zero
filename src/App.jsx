@@ -7,7 +7,7 @@ const sections = [
   {
     id: "vision-partner",
     label: "As a Partner",
-    icon: "◇",
+    icon: "♡",
     color: "#3AAFB9",
     description: "This section is about you as a partner — not as a parent, not as a co-parent. Just you, and the person you want to show up as in this relationship. Answer honestly and speak only for yourself.",
     questions: [
@@ -56,7 +56,7 @@ const sections = [
   {
     id: "vision-parent",
     label: "As a Parent",
-    icon: "△",
+    icon: "⌂",
     color: "#A06CD5",
     description: "This section is about you as an individual parent — not about co-parenting, not about your partner's role. Focus on what you personally want to give your children, what you want to stop, and the legacy you want to leave them.",
     questions: [
@@ -105,7 +105,7 @@ const sections = [
   {
     id: "shared",
     label: "Shared Vision",
-    icon: "✦",
+    icon: "∞",
     color: "#C60F7B",
     shared: true,
     description: "This final section is still answered individually — each partner completes it separately using 'I think' and 'I feel' language. Once both of you are done, sit together and take turns reading your answers out loud. Listen without interrupting.",
@@ -664,7 +664,7 @@ export default function DayZeroFramework() {
       <div style={{ background: "#3AAFB9", color: "#fff", padding: "0.6rem clamp(0.8rem, 3vw, 1.2rem)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: "clamp(1.3rem, 4vw, 1.7rem)", fontWeight: "700", color: "#fff", lineHeight: 1.2 }}>Day Zero</h1>
+            <h1 onClick={() => { setAccepted(false); setShowAuthPage(false); setShowExport(false); window.scrollTo({ top: 0 }); }} style={{ margin: 0, fontSize: "clamp(1.3rem, 4vw, 1.7rem)", fontWeight: "700", color: "#fff", lineHeight: 1.2, cursor: "pointer" }}>Day Zero</h1>
             <div style={{ fontSize: "clamp(0.5rem, 1.5vw, 0.68rem)", letterSpacing: "0.2em", color: "#fff", opacity: 0.85, marginTop: "0.15rem" }}>A FRAMEWORK FOR RENEWAL</div>
           </div>
           <div style={{ display: "flex", gap: "0.4rem", flexShrink: 0 }}>
@@ -745,13 +745,13 @@ export default function DayZeroFramework() {
           {/* Guest name prompt — centered, before the questionnaire */}
           {!user && !nameSubmitted && (
             <div style={{ maxWidth: 480, margin: "0 auto 1.5rem", background: "#fff", border: "1px solid #e0dcd7", padding: "clamp(1.2rem, 5vw, 2rem)" }}>
-              <h2 style={{ fontWeight: 400, fontSize: "clamp(1.2rem, 4vw, 1.4rem)", marginTop: 0, marginBottom: "0.5rem" }}>What is your name?</h2>
+              <h2 style={{ fontWeight: 400, fontSize: "clamp(1.2rem, 4vw, 1.4rem)", marginTop: 0, marginBottom: "0.5rem" }}>What should we call you?</h2>
               <p style={{ color: "#777", fontSize: "clamp(0.9rem, 3vw, 1rem)", lineHeight: 1.2, marginBottom: "1rem" }}>
-                Your name will appear on your exported PDF.
+                Enter your name or nickname. This is how your answers will be signed.
               </p>
               <input
                 autoFocus
-                placeholder="Your first name"
+                placeholder="Name or nickname"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && userName.trim()) setNameSubmitted(true); }}
@@ -969,7 +969,7 @@ export default function DayZeroFramework() {
                       {Object.entries(smartColors).map(([label, color]) => (
                         <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
                           <div style={{ width: 9, height: 9, background: color, borderRadius: "50%", flexShrink: 0 }} />
-                          <span style={{ fontSize: "clamp(0.87rem, 3vw, 0.94rem)", color }}><strong>{label[0]}</strong>{label.slice(1)}</span>
+                          <span style={{ fontSize: "clamp(0.78rem, 2.5vw, 0.85rem)", color }}><strong>{label[0]}</strong>{label.slice(1)}</span>
                         </div>
                       ))}
                     </div>

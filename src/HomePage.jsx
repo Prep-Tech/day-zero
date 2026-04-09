@@ -28,9 +28,9 @@ const MockupCard = () => (
     <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1.2rem", justifyContent: "center" }}>
       <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#3AAFB9", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.7rem" }}>✓</div>
       <div style={{ width: 20, height: 1, background: "#3AAFB9" }} />
-      <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#A06CD5", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.85rem" }}>△</div>
+      <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#A06CD5", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.85rem" }}>⌂</div>
       <div style={{ width: 20, height: 1, background: "#ddd" }} />
-      <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid #ddd", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", color: "#bbb", fontSize: "0.85rem" }}>✦</div>
+      <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid #ddd", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", color: "#bbb", fontSize: "0.85rem" }}>∞</div>
     </div>
     {/* Section label */}
     <div style={{
@@ -38,7 +38,7 @@ const MockupCard = () => (
       padding: "0.6rem 0.8rem", marginBottom: "0.8rem",
       fontSize: "0.8rem", color: "#444",
     }}>
-      <strong style={{ color: "#1a1a1a" }}>△ As a Parent —</strong> Focus on what you personally want to give your children...
+      <strong style={{ color: "#1a1a1a" }}>⌂ As a Parent —</strong> Focus on what you personally want to give your children...
     </div>
     {/* Question card */}
     <div style={{ border: "1px solid #A06CD5", borderLeft: "3px solid #A06CD5", padding: "0.8rem", marginBottom: "0.6rem" }}>
@@ -81,8 +81,8 @@ export default function HomePage({ onBegin, onSignUp, user }) {
       {/* ═══ THE PROBLEM ═══ */}
       {section("#fff", (
         <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center" }}>
-          <div style={{ fontSize: "0.8rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 600 }}>THE PROBLEM</div>
-          <h3 style={{ fontSize: "clamp(1.4rem, 4vw, 2rem)", fontWeight: 600, margin: "0 0 1.2rem", color: "#1a1a1a" }}>
+          <div style={{ fontSize: "0.9rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>THE PROBLEM</div>
+          <h3 style={{ fontSize: "clamp(1.3rem, 3.5vw, 1.75rem)", fontWeight: 600, margin: "0 0 1.2rem", color: "#1a1a1a" }}>
             Important conversations deserve more than a heated moment
           </h3>
           <p style={{ color: "#555", fontSize: "clamp(1rem, 3vw, 1.12rem)", lineHeight: 1.6, margin: "0 0 1rem" }}>
@@ -98,8 +98,8 @@ export default function HomePage({ onBegin, onSignUp, user }) {
       {section("#F7F4EF", (
         <>
           <div style={{ textAlign: "center", marginBottom: "clamp(2rem, 5vw, 3rem)" }}>
-            <div style={{ fontSize: "0.8rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 600 }}>HOW IT WORKS</div>
-            <h3 style={{ fontSize: "clamp(1.4rem, 4vw, 2rem)", fontWeight: 600, margin: 0, color: "#1a1a1a" }}>
+            <div style={{ fontSize: "0.9rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>HOW IT WORKS</div>
+            <h3 style={{ fontSize: "clamp(1.3rem, 3.5vw, 1.75rem)", fontWeight: 600, margin: 0, color: "#1a1a1a" }}>
               Three sections. Fifteen questions. One fresh start.
             </h3>
           </div>
@@ -127,17 +127,17 @@ export default function HomePage({ onBegin, onSignUp, user }) {
       {section("#fff", (
         <>
           <div style={{ textAlign: "center", marginBottom: "clamp(2rem, 5vw, 3rem)" }}>
-            <div style={{ fontSize: "0.8rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 600 }}>WHY IT WORKS</div>
-            <h3 style={{ fontSize: "clamp(1.4rem, 4vw, 2rem)", fontWeight: 600, margin: 0, color: "#1a1a1a" }}>
+            <div style={{ fontSize: "0.9rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>WHY IT WORKS</div>
+            <h3 style={{ fontSize: "clamp(1.3rem, 3.5vw, 1.75rem)", fontWeight: 600, margin: 0, color: "#1a1a1a" }}>
               Decouple the conversation from the conflict
             </h3>
           </div>
           <div className="benefits-grid" style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
             {[
-              { icon: "◇", title: "Reflect without pressure", desc: "No one is watching. No one is waiting for an answer. You write what you actually think — not what the moment forces out of you." },
-              { icon: "△", title: "Share on your own terms", desc: "Export your answers as a PDF and hand it to your partner when you're both calm. No ambush. No being put on the spot." },
-              { icon: "✦", title: "Hear without defending", desc: "When your partner shares their answers, you read — not react. There's no rebuttal. Just understanding what they actually want." },
-              { icon: "↻", title: "Create a reference point", desc: "Months from now, you can both look back at what you committed to. It's not about being perfect — it's about having a shared starting point." },
+              { icon: "🪞", title: "Reflect without pressure", desc: "No one is watching. No one is waiting for an answer. You write what you actually think — not what the moment forces out of you." },
+              { icon: "📄", title: "Share on your own terms", desc: "Export your answers as a PDF and hand it to your partner when you're both calm. No ambush. No being put on the spot." },
+              { icon: "👂", title: "Hear without defending", desc: "When your partner shares their answers, you read — not react. There's no rebuttal. Just understanding what they actually want." },
+              { icon: "📌", title: "Create a reference point", desc: "Months from now, you can both look back at what you committed to. It's not about being perfect — it's about having a shared starting point." },
             ].map((b, i) => (
               <div key={i} style={{
                 flex: "1 1 240px", padding: "1.5rem",
@@ -156,8 +156,8 @@ export default function HomePage({ onBegin, onSignUp, user }) {
       {section("#F7F4EF", (
         <div className="preview-grid" style={{ display: "flex", gap: "clamp(1.5rem, 5vw, 3rem)", flexWrap: "wrap", alignItems: "center" }}>
           <div style={{ flex: "1 1 340px", minWidth: 0 }}>
-            <div style={{ fontSize: "0.8rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 600 }}>INSIDE DAY ZERO</div>
-            <h3 style={{ fontSize: "clamp(1.4rem, 4vw, 2rem)", fontWeight: 600, margin: "0 0 1rem", color: "#1a1a1a" }}>
+            <div style={{ fontSize: "0.9rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>INSIDE DAY ZERO</div>
+            <h3 style={{ fontSize: "clamp(1.3rem, 3.5vw, 1.75rem)", fontWeight: 600, margin: "0 0 1rem", color: "#1a1a1a" }}>
               Guided sentences, not blank pages
             </h3>
             <p style={{ color: "#555", fontSize: "clamp(0.95rem, 3vw, 1.08rem)", lineHeight: 1.6, margin: "0 0 1rem" }}>
@@ -177,8 +177,8 @@ export default function HomePage({ onBegin, onSignUp, user }) {
       {/* ═══ THE PREMISE ═══ */}
       {section("#fff", (
         <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
-          <div style={{ fontSize: "0.8rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 600 }}>THE PREMISE</div>
-          <h3 style={{ fontSize: "clamp(1.4rem, 4vw, 2rem)", fontWeight: 600, margin: "0 0 1.2rem", color: "#1a1a1a" }}>
+          <div style={{ fontSize: "0.9rem", letterSpacing: "0.3em", color: "#3AAFB9", marginBottom: "0.8rem", fontWeight: 700 }}>THE PREMISE</div>
+          <h3 style={{ fontSize: "clamp(1.3rem, 3.5vw, 1.75rem)", fontWeight: 600, margin: "0 0 1.2rem", color: "#1a1a1a" }}>
             All past issues are forgiven and forgotten
           </h3>
           <div style={{
